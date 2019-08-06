@@ -105,6 +105,8 @@
 
 #define ONE_WIRE_BUS A0          // Dallas Temperature Sensor
 #define Vpwerbus     A3          // ADC input for Vpwrbus for measuring battery voltage
+#define VpwerDivider 1.3333      // Multiplying factor for ADC voltage divider
+
 
 /***********************************************************
    Si5351a Configuration Parameters

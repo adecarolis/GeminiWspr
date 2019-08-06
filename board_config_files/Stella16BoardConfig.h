@@ -104,6 +104,7 @@
 #define GPS_PPS_PIN A5            // DL6OW STELLA boards and other U3S Clones use A5/ADC5 (physical pin #28) for PPS. This uses PCINT13   
 
 #define Vpwerbus     A3          // ADC input for Vpwrbus for measuring battery voltage
+#define VpwerDivider 1.3333      // Multiplying factor for ADC voltage divider
 
 /***********************************************************
    Si5351a Configuration Parameters
