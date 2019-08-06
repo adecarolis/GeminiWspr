@@ -40,6 +40,11 @@ int read_DS1820_temperature() {
 }
 #endif // DS1820_TEMP_SENSOR_PRESENT
 
+#if defined (TMP36_TEMP_SENSOR_PRESENT)
+int read_TEMP36_temperature() {
+  return ((int)(analogRead(TMP36_PIN) / 1024 * 330 - 50));
+}
+#endif
 
 int read_voltage_v_x10() {
 
@@ -53,7 +58,7 @@ int read_voltage_v_x10() {
 
     // Arduino 10bit ADC; 3.3v external AREF each count of 1 = 0.00322265625V
     AdcCount = analogRead(Vpwerbus); // read Vpwerbus
-    Vpower = AdcCount * 0.00322 * 1.33333;
+    Vpower = AdcCount * 0.00322 * VpwerDivider;
     sum = sum + Vpower ;
   }
 

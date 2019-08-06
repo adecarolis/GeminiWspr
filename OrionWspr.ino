@@ -278,6 +278,8 @@ void get_telemetry_data() {
   // Since these are not reliant on the GPS we assume that we will always be able to get valid values for these.
 #if defined (DS1820_TEMP_SENSOR_PRESENT)
   g_orion_current_telemetry.temperature_c =  read_DS1820_temperature();
+#elseif
+  g_orion_current_telemetry.temperature_c =  read_TEMP36_temperature();
 #else
   g_orion_current_telemetry.temperature_c = 0;
 #endif
