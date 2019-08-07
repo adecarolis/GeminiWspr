@@ -169,7 +169,7 @@ unsigned long get_tx_frequency() {
     return FIXED_BEACON_FREQ_HZ;
   else {
     // QRM Avoidance - add a random number in range of 0 to 180 to the base TX frequency to help avoid QRM
-    return (BEACON_FREQ_HZ + random(181)); // base freq + 0 to 180 hz random offset
+    return (BEACON_FREQ_HZ + random(BEACON_RANDOM_OFFSET + 1)); // base freq + random offset
   }
 
 }

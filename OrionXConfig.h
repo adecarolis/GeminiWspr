@@ -32,6 +32,7 @@
 //#define BEACON_FREQ_HZ          10140110UL     // Base Beacon Frequency In Hz for 30m. 
 
 #define BEACON_FREQ_HZ            14097010UL    //  Base Frequency In Hz for use when QRM Avoidance is enabled. Actual Tx frequency is BEACON_FREQ_HZ + a random offset.
+#define BEACON_RANDOM_OFFSET      100           //  Beacon Frequency offset used when QRM Avoidance is enabled.
 #define FIXED_BEACON_FREQ_HZ      14097070UL    //  Beacon Frequency In Hz for use when QRM Avoidance is disabled.
 #define PARK_FREQ_HZ              108000000ULL  // Use this on clk SI5351A_PARK_CLK_NUM to keep the SI5351a warm to avoid thermal drift during WSPR transmissions. Max 109 Mhz.
 
