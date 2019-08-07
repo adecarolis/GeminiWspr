@@ -184,18 +184,8 @@ OrionAction orion_state_machine(OrionEvent event) {
 
     case  TX_SECONDARY_WSPR_ST : // transmitting Secondary WSPR Msg
       if (event == SECONDARY_WSPR_TX_DONE_EV) { // Secondary WSPR Transmission Complete
-
-        if ((SI5351_SELF_CALIBRATION_SUPPORTED == true) && (is_selfcalibration_on())) {
-          // Now we initiate a four minute Calibration Cycle for the next transmission
-          orion_sm_change_state(CALIBRATE_ST);
-          next_action = CALIBRATION_ACTION;
-        }
-        else {
-          // If we don't support self Calibration then skip to telemetry
-          orion_sm_change_state(WAIT_TELEMETRY_ST);
-          next_action = NO_ACTION;
-        }
-
+        orion_sm_change_state(WAIT_TELEMETRY_ST);
+        next_action = NO_ACTION;
       }
       else
         swerr(5, event); // This event is not supported in this state
