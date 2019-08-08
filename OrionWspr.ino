@@ -483,7 +483,7 @@ void get_gps_fix_and_time() {
   while (gps.available(gpsPort)) {
     fix = gps.read();
 
-    if (fix.valid.time) {
+    if (fix.valid.time && fix.dateTime.year > 2010 && fix.dateTime.year < 2020) {
 
       // If we have a valid fix, set the Time on the Arduino if needed
       if ( timeStatus() == timeNotSet ) { // System date/time isn't set so set it
