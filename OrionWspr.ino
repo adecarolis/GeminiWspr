@@ -699,11 +699,23 @@ OrionAction orion_scheduler() {
 
         // Primary WSPR Transmission Triggers every 10th minute of the hour on the first second
         case 0  :
+        case 4  :
+        case 8  :
         case 10 :
+        case 14 :
+        case 18 :
         case 20 :
+        case 24 :
+        case 28 :
         case 30 :
+        case 34 :
+        case 38 :
         case 40 :
+        case 44 :
+        case 48 :
         case 50 :
+        case 54 :
+        case 58 :
           // Primary WSPR transmission should start on the 1st second of the minute, but there's a slight delay
           // in this code because it is limited to 1 second resolution.
           return (orion_state_machine(PRIMARY_WSPR_TX_TIME_EV)); // This is a bit time critical so we try to minimize any extra processing
@@ -711,11 +723,17 @@ OrionAction orion_scheduler() {
         // These are also time critical as they trigger Telemetry messages so we try to minimize any extra processing by returning directly
         // Telemetry is sent in the next even minute slot after the Primary message
         case 2  : return (orion_state_machine(WSPR_TX_TIME_MIN02_EV));
+        case 6  : return (orion_state_machine(WSPR_TX_TIME_MIN02_EV));
         case 12 : return (orion_state_machine(WSPR_TX_TIME_MIN12_EV));
+        case 16 : return (orion_state_machine(WSPR_TX_TIME_MIN02_EV));
         case 22 : return (orion_state_machine(WSPR_TX_TIME_MIN22_EV));
+        case 26 : return (orion_state_machine(WSPR_TX_TIME_MIN02_EV));
         case 32 : return (orion_state_machine(WSPR_TX_TIME_MIN32_EV));
+        case 36 : return (orion_state_machine(WSPR_TX_TIME_MIN02_EV));
         case 42 : return (orion_state_machine(WSPR_TX_TIME_MIN42_EV));
+        case 46 : return (orion_state_machine(WSPR_TX_TIME_MIN02_EV));
         case 52 : return (orion_state_machine(WSPR_TX_TIME_MIN52_EV));
+        case 56 : return (orion_state_machine(WSPR_TX_TIME_MIN02_EV));
 
         case 9  :
         case 19 :
