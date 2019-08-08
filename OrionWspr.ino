@@ -693,7 +693,7 @@ OrionAction orion_scheduler() {
 
     Minute = minute();
 
-    if (Second == 1) { // To simplify things we trigger everything at the one second mark if we are on the correct minute
+    if (Second == 0) {
 
       switch (Minute) {
 
