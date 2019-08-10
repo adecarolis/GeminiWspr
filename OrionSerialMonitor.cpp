@@ -311,6 +311,12 @@ void orion_log(char msg[])
   debugSerial.println(msg);
 }
 
+void orion_log_long(unsigned long num)
+{
+  debugSerial.print(F("Debug: "));
+  debugSerial.println(num, DEC);
+}
+
 /**********************
 /* Serial Monitor code 
 /**********************/
