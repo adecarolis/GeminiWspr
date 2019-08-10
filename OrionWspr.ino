@@ -502,20 +502,6 @@ void get_gps_fix_and_time() {
       digitalWrite(SYNC_LED_PIN, LOW); // Turn LED off
 #endif
   }
-
-
-  if (g_chrono.hasPassed(TIME_SET_INTERVAL_MS, true)) { // When the time set interval has passed, restart the Chronometer set system time again from GPS
-    setTime(fix.dateTime.hours, fix.dateTime.minutes, fix.dateTime.seconds, fix.dateTime.date, fix.dateTime.month, fix.dateTime.year);
-
-    // If we are using the SYNC_LED
-#if defined (SYNC_LED_PRESENT)
-    if (timeStatus() == timeSet)
-      digitalWrite(SYNC_LED_PIN, HIGH); // Turn LED on if the time is synced
-    else
-      digitalWrite(SYNC_LED_PIN, LOW); // Turn LED off
-#endif
-  }
-
 }  // end get_gps_fix_and_time()
 
 
@@ -714,6 +700,7 @@ void setup() {
 
 
 void loop() {
+  unsigned long starttime;
   /****************************************************************************************************************************
     This loop constantly updates the system time from the GPS and calls the scheduler for the operation of the Orion Beacon
   ****************************************************************************************************************************/
@@ -737,6 +724,15 @@ void loop() {
   serial_monitor_interface();
 
   // Call the scheduler to determine if it is time for any action
-  g_current_action = orion_scheduler();
-
+  if (g_chrono.hasPassed(TIME_SET_INTERVAL_MS, true)) { // When the time set interval has passed, restart the Chronometer set system time again from GPS
+    g_current_action = orion_state_machine(TIMER_EXPIRED);
+#if defined (SYNC_LED_PRESENT)
+if (timeStatus() == timeSet)
+  digitalWrite(SYNC_LED_PIN, HIGH); // Turn LED on if the time is synced
+else
+  digitalWrite(SYNC_LED_PIN, LOW); // Turn LED off
+#endif
+  } else {
+    g_current_action = orion_scheduler();
+  }
 } // end loop ()
