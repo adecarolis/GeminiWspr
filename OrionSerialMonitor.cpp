@@ -150,7 +150,8 @@ char *EventNames[] =
   "SETUP_DONE",
   "CALIBRATION_DONE",
   "WSPR_TX_TIME",
-  "WSPR_TX_DONE"
+  "WSPR_TX_DONE",
+  "TIMER_EXPIRED"
 };
 
 char *ActionNames[] =
