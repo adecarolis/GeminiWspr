@@ -27,6 +27,7 @@ enum OrionWsprMsgType {PRIMARY_WSPR_MSG, ALTITUDE_TELEM_MSG, TEMPERATURE_TELEM_M
 void swerr(byte swerr_num, int data);
 void serial_monitor_begin();
 void serial_monitor_interface();
+void orion_log(char msg[]);
 void orion_log_telemetry(struct OrionTxData *data);
 void orion_log_wspr_tx(OrionWsprMsgType msgType, char grid[], unsigned long freq_hz, uint8_t pwr_dbm);
 void orion_sm_trace_pre(byte state, byte event);

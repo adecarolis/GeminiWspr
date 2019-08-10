@@ -134,6 +134,33 @@ void println_cmd_list(){
   debugSerial.println(F("cmds: v = f/w version, d = debug trace on/off, l = TX log on/off, i= info on/off, q = qrm avoidance on/off, ? = cmd list"));
 } 
 
+char *StateNames[] =
+{
+    "POWER_UP",
+    "WAIT_GPS_READY",
+    "CALIBRATE",
+    "WAIT_TX",
+    "WSPR_TX"
+};
+
+char *EventNames[] =
+{
+  "NO_EVENT",
+  "GPS_READY",
+  "SETUP_DONE",
+  "CALIBRATION_DONE",
+  "WSPR_TX_TIME",
+  "WSPR_TX_DONE"
+};
+
+char *ActionNames[] =
+{
+  "NO_ACTION",
+  "DO_GPS_FIX",
+  "DO_CALIBRATION",
+  "DO_WSPR_TX"
+};
+
 
 
 void orion_sm_trace_pre(byte state, byte event){
@@ -143,9 +170,9 @@ void orion_sm_trace_pre(byte state, byte event){
   print_date_time();
   debugSerial.print(F(">> orion PRE sm trace: "));
   debugSerial.print(F("curr_state: "));
-  debugSerial.print(state);
+  debugSerial.print(StateNames[state]);
   debugSerial.print(F(" curr_event: "));
-  debugSerial.println(event);
+  debugSerial.println(EventNames[event]);
   print_monitor_prompt();  
 }
 
@@ -156,11 +183,11 @@ void orion_sm_trace_post(byte state, byte processed_event,  byte resulting_actio
   print_date_time();
   debugSerial.print(F("<< orion POST sm trace: "));
   debugSerial.print(F("curr_state: "));
-  debugSerial.print(state);
+  debugSerial.print(StateNames[state]);
   debugSerial.print(F(" event_just_processed: "));
-  debugSerial.print(processed_event);
+  debugSerial.print(EventNames[processed_event]);
   debugSerial.print(F(" action: "));
-  debugSerial.println(resulting_action);
+  debugSerial.println(ActionNames[resulting_action]);
   print_monitor_prompt();
     
 }
@@ -275,6 +302,14 @@ void log_calibration(uint64_t sampled_freq, int32_t o_cal_factor, int32_t n_cal_
   print_monitor_prompt();
   
 }
+
+void orion_log(char msg[])
+{
+  if (g_info_log_on_off == OFF) return;
+  debugSerial.print(F("Debug: "));
+  debugSerial.println(msg);
+}
+
 /**********************
 /* Serial Monitor code 
 /**********************/
