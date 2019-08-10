@@ -281,7 +281,7 @@ void log_calibration_start() {
   if (g_txlog_on_off == OFF) return; 
   
   print_date_time();
-  debugSerial.println(F(" ** running CALIBRATION for 4 minutes **"));
+  debugSerial.println(F(" ** running CALIBRATION **"));
   print_monitor_prompt();
 } 
 
