@@ -21,7 +21,7 @@
 #include "OrionXConfig.h"
 
 #define FINE_CORRECTION_STEP   10     // 0.1 HZ step
-#define COARSE_CORRECTION_STEP 1000   // 10 Hz step
+#define COARSE_CORRECTION_STEP 100    // 10 Hz step
 
 void setup_calibration();
 void reset_for_calibration();
