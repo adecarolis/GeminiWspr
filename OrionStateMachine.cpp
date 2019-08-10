@@ -80,7 +80,11 @@ OrionAction orion_state_machine(OrionEvent event) {
           // If we don't support self Calibration then skip to telemetry
           orion_sm_change_state(WAIT_TX);
         }
-      } 
+      }
+      else if (event == TIMER_EXPIRED) {
+        orion_sm_change_state(WAIT_GPS_READY);
+        next_action = DO_GPS_FIX;
+      }
       else
         swerr(1, event); // This event is not supported in this state       
       break;
@@ -99,6 +103,9 @@ OrionAction orion_state_machine(OrionEvent event) {
         // Time to transmit
         orion_sm_change_state(WSPR_TX);
         next_action = DO_WSPR_TX;
+      } else if (event == TIMER_EXPIRED) {
+        orion_sm_change_state(WAIT_GPS_READY);
+        next_action = DO_GPS_FIX;
       }
       else
         swerr(3, event); // This event is not supported in this state
@@ -108,6 +115,9 @@ OrionAction orion_state_machine(OrionEvent event) {
 
       if (event == WSPR_TX_DONE) { // Time to send Primary WSPR MSG
         orion_sm_change_state(WAIT_TX);
+      } else if (event == TIMER_EXPIRED) {
+        orion_sm_change_state(WAIT_GPS_READY);
+        next_action = DO_GPS_FIX;
       }
       else
         swerr(4, event); // This event is not supported in this state
