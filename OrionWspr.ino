@@ -473,26 +473,55 @@ void encode_and_tx_wspr_msg() {
   delay(1000); // Delay one second
 } // end of encode_and_tx_wspr_msg()
 
-
-void get_gps_fix_and_time() {
+uint8_t get_gps_fix_and_time() {
   /*********************************************
     Get the latest GPS Fix
   * ********************************************/
+  uint16_t start = 0;
+  bool failed = false;
 
-  orion_log("Waiting for GPS to become available...");
+  start = g_chrono.elapsed();
   while (not gps.available(gpsPort)) {
     ;
+     if (g_chrono.elapsed() - start > 60000) {
+      // If no there is no data from the GPS after 1 minute
+      // then something is seriously wrong. Let's reset the unit 
+      orion_log("Error: GPS not available");
+      // Power cycle if supported
+#if defined(GPS_POWER_DISABLE_SUPPORTED)
+  pinMode(GPS_POWER_DISABLE_PIN, OUTPUT);
+  digitalWrite(GPS_POWER_DISABLE_PIN, HIGH);
+  delay(500);
+  pinMode(GPS_POWER_DISABLE_PIN, OUTPUT);
+  digitalWrite(GPS_POWER_DISABLE_PIN, LOW);
+#else
+  // otherwise do a software reset
+  gps.reset();
+#endif
+       failed = true;
+       break;
+    }
   }
-  
-  orion_log("GPS available! Now waiting for a valid fix...");
+
+  start = g_chrono.elapsed();
   do {
     fix = gps.read();
-  } while (not fix.valid.location);
+     if (g_chrono.elapsed() - start > 600000) {
+       orion_log("Error: No GPS fix after 10 minutes, giving up");
+       failed = true;
+       break;
+     }
+  }
+  while (not fix.valid.location);
   
-  // If we have a valid fix, set the Time on the Arduino if needed
-  if ( timeStatus() == timeNotSet ) { // System date/time isn't set so set it
-  setTime(fix.dateTime.hours, fix.dateTime.minutes, fix.dateTime.seconds, fix.dateTime.date, fix.dateTime.month, fix.dateTime.year);
-  g_chrono.start();
+  if (not failed) {
+    setTime(fix.dateTime.hours,
+            fix.dateTime.minutes,
+            fix.dateTime.seconds,
+            fix.dateTime.date,
+            fix.dateTime.month, 
+            fix.dateTime.year);
+  }
 
     // If we are using the SYNC_LED
 #if defined (SYNC_LED_PRESENT)
@@ -501,7 +530,6 @@ void get_gps_fix_and_time() {
     else
       digitalWrite(SYNC_LED_PIN, LOW); // Turn LED off
 #endif
-  }
 }  // end get_gps_fix_and_time()
 
 
@@ -512,6 +540,7 @@ OrionAction process_orion_sm_action (OrionAction action) {
     We don't need to worry about state we just do what we are told.
   ****************************************************************************************************/
   OrionAction returned_action = NO_ACTION;
+  uint8_t result;
 
   switch (action) {
 
