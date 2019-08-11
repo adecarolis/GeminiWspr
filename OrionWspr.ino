@@ -477,13 +477,12 @@ uint8_t get_gps_fix_and_time() {
   /*********************************************
     Get the latest GPS Fix
   * ********************************************/
-  uint16_t start = 0;
+  unsigned long start, partial = 0;
   bool failed = false;
 
-  start = g_chrono.elapsed();
+  start = h_chrono.elapsed();
   while (not gps.available(gpsPort)) {
-    ;
-     if (g_chrono.elapsed() - start > 60000) {
+     if (h_chrono.elapsed() - start > 60000) {
       // If no there is no data from the GPS after 1 minute
       // then something is seriously wrong. Let's reset the unit 
       orion_log("Error: GPS not available");
@@ -503,10 +502,15 @@ uint8_t get_gps_fix_and_time() {
     }
   }
 
-  start = g_chrono.elapsed();
+  start, partial = h_chrono.elapsed();
   do {
     fix = gps.read();
-     if (g_chrono.elapsed() - start > 600000) {
+      if (h_chrono.elapsed() - partial > 30000 ) {
+       orion_log("No GPS fix yet... still trying");
+       partial = h_chrono.elapsed();
+      }
+
+     if (h_chrono.elapsed() - start > 600000) {
        orion_log("Error: No GPS fix after 10 minutes, giving up");
        failed = true;
        break;
