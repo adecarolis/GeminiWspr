@@ -307,14 +307,18 @@ void log_calibration(uint64_t sampled_freq, int32_t o_cal_factor, int32_t n_cal_
 void orion_log(char msg[])
 {
   if (g_info_log_on_off == OFF) return;
-  debugSerial.print(F("Debug: "));
+  print_date_time();
   debugSerial.println(msg);
+  print_monitor_prompt();
 }
 
-void orion_log_long(unsigned long num)
+void orion_log_value(char msg[], unsigned long num)
 {
-  debugSerial.print(F("Debug: "));
+  print_date_time();
+  debugSerial.print(msg);
+  debugSerial.print(F(" "));
   debugSerial.println(num, DEC);
+  print_monitor_prompt();
 }
 
 /**********************

@@ -24,10 +24,10 @@
 // For use in info logging
 enum OrionWsprMsgType {PRIMARY_WSPR_MSG, ALTITUDE_TELEM_MSG, TEMPERATURE_TELEM_MSG, VOLTAGE_TELEM_MSG};
 
-void orion_log_long(unsigned long num);
 void swerr(byte swerr_num, int data);
 void serial_monitor_begin();
 void serial_monitor_interface();
+void orion_log_value(char msg[], unsigned long num);
 void orion_log(char msg[]);
 void orion_log_telemetry(struct OrionTxData *data);
 void orion_log_wspr_tx(OrionWsprMsgType msgType, char grid[], unsigned long freq_hz, uint8_t pwr_dbm);
