@@ -491,8 +491,8 @@ void get_gps_fix_and_time() {
   
   // If we have a valid fix, set the Time on the Arduino if needed
   if ( timeStatus() == timeNotSet ) { // System date/time isn't set so set it
-    setTime(fix.dateTime.hours, fix.dateTime.minutes, fix.dateTime.seconds, fix.dateTime.date, fix.dateTime.month, fix.dateTime.year);
-    g_chrono.start();
+  setTime(fix.dateTime.hours, fix.dateTime.minutes, fix.dateTime.seconds, fix.dateTime.date, fix.dateTime.month, fix.dateTime.year);
+  g_chrono.start();
 
     // If we are using the SYNC_LED
 #if defined (SYNC_LED_PRESENT)
