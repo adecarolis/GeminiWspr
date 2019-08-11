@@ -756,9 +756,11 @@ void loop() {
   /*
      Set the crhono every 5 seconds. This is subobptimal but in the absence of an RTC chip
      the onboard clock tends to drift significantly.
+     Calling prepare_telemetry() to printout the current telemetry data
   */
 
   if (h_chrono.hasPassed(TIME_SET_INTERVAL_MS, true)) {
+    prepare_telemetry();
     get_gps_fix_and_time();
   }
   
