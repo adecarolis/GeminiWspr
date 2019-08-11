@@ -111,7 +111,7 @@ static NMEAGPS gps;
 static gps_fix fix;
 
 //Time related
-LightChrono g_chrono;
+LightChrono g_chrono, h_chrono;
 
 // If we are using software serial to talk to the GPS then we need to create an instance of NeoSWSerial and
 // provide the RX and TX Pin numbers.
@@ -693,6 +693,10 @@ void setup() {
   // Read unused analog pin (not connected) to generate a random seed for QRM avoidance feature
   randomSeed(analogRead(ANALOG_PIN_FOR_RNG_SEED));
 
+  // Start the Chronos
+  g_chrono.start();
+  h_chrono.start();
+
   // Tell the state machine that we are done SETUP
   g_current_action = orion_state_machine(SETUP_DONE);
 
@@ -715,6 +719,16 @@ void loop() {
 
     }
   */
+
+  /*
+     Set the crhono every 5 seconds. This is subobptimal but in the absence of an RTC chip
+     the onboard clock tends to drift significantly.
+  */
+
+  if (h_chrono.hasPassed(TIME_SET_INTERVAL_MS, true)) {
+    get_gps_fix_and_time();
+  }
+  
   // This triggers actual work when the state machine returns an OrionAction
   while (g_current_action != NO_ACTION) {
     g_current_action = process_orion_sm_action(g_current_action);
@@ -723,8 +737,8 @@ void loop() {
   // Process serial monitor input
   serial_monitor_interface();
 
-  // Call the scheduler to determine if it is time for any action
-  if (g_chrono.hasPassed(TIME_SET_INTERVAL_MS, true)) { // When the time set interval has passed, restart the Chronometer set system time again from GPS
+  
+  if (g_chrono.hasPassed(CALIBRATION_INTERVAL, true)) { // When the time set interval has passed, restart the Chronometer set system time again from GPS
     g_current_action = orion_state_machine(TIMER_EXPIRED);
 #if defined (SYNC_LED_PRESENT)
 if (timeStatus() == timeSet)
@@ -733,6 +747,7 @@ else
   digitalWrite(SYNC_LED_PIN, LOW); // Turn LED off
 #endif
   } else {
+    // Call the scheduler to determine if it is time for any action
     g_current_action = orion_scheduler();
   }
 } // end loop ()

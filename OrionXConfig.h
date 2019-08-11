@@ -42,7 +42,8 @@
 #define BEACON_TX_PWR_DBM          7          // Beacon Power Output in dBm (5mW = 7dBm)
 
 // This defines how often we reset the Arduino Clock to the current GPS time 
-#define TIME_SET_INTERVAL_MS   600000         // 60,000 ms / minute x 10 = 10 minutes         
+#define TIME_SET_INTERVAL_MS   5000           // 5,000 ms    = 5 seconds
+#define CALIBRATION_INTERVAL   600000         // 600,000 ms  = 10 minutes
 
 // Type Definitions
 
