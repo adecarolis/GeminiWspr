@@ -147,6 +147,7 @@ char *EventNames[] =
 {
   "NO_EVENT",
   "GPS_READY",
+  "GPS_FAIL",
   "SETUP_DONE",
   "CALIBRATION_DONE",
   "WSPR_TX_TIME",

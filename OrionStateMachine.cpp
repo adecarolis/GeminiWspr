@@ -77,13 +77,18 @@ OrionAction orion_state_machine(OrionEvent event) {
           next_action = DO_CALIBRATION;
         }
         else {
-          // If we don't support self Calibration then skip to telemetry
+          // If calibration is not suppoerted wait for next TX cycle
           orion_sm_change_state(WAIT_TX);
         }
       }
       else if (event == TIMER_EXPIRED) {
         orion_sm_change_state(WAIT_GPS_READY);
         next_action = DO_GPS_FIX;
+      }
+      else if (event == GPS_FAIL) {
+          // trying again getting a fix
+          orion_sm_change_state(WAIT_GPS_READY);
+          next_action = DO_GPS_FIX;
       }
       else
         swerr(1, event); // This event is not supported in this state       

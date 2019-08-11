@@ -521,8 +521,12 @@ OrionAction process_orion_sm_action (OrionAction action) {
       break;
 
     case DO_GPS_FIX :
-      get_gps_fix_and_time();
-      returned_action = orion_state_machine(GPS_READY);
+      result = get_gps_fix_and_time();
+      if (result == 0) {
+        returned_action = orion_state_machine(GPS_READY);
+      } else {
+        returned_action = orion_state_machine(GPS_FAIL);
+      }
       break;
 
     case DO_CALIBRATION :
