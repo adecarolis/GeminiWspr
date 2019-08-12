@@ -42,7 +42,7 @@ int read_DS1820_temperature() {
 
 #if defined (TMP36_TEMP_SENSOR_PRESENT)
 int read_TEMP36_temperature() {
-  return ((int)(analogRead(TMP36_PIN) / 1024 * 330 - 50));
+  return (double)analogRead(TMP36_PIN) / 1024 * 330 - 50;
 }
 #endif
 
