@@ -99,7 +99,7 @@ Arduino Hardware Pin Configurations - change these to match your specific hardwa
 #define ANALOG_PIN_FOR_RNG_SEED  A2              // Pin used to generate seed for Random number generator - must be a free analog pin (unused)
  
 #define Vpwerbus     A0          // ADC input for Vpwrbus for measuring battery voltage
-#define VpwerDivider 4.7         // Multiplying factor for ADC voltage divider
+#define VpwerDivider 5.7         // Multiplying factor for ADC voltage divider
 
  
 #define CAL_FREQ_IN_PIN 5        // This must be D5 as it is the external clock input for Timer1 when it is used as a counter. 
