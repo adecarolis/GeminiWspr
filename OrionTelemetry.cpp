@@ -70,6 +70,7 @@ int read_voltage_v_x10() {
   return voltage_v_x10;
 }
 
+#if !defined (DS1820_TEMP_SENSOR_PRESENT) && !defined (TMP36_TEMP_SENSOR_PRESENT)
 int read_processor_temperature() {
 
   unsigned int wADC;
@@ -100,6 +101,7 @@ int read_processor_temperature() {
   // The returned temperature is in degrees Celsius.
   return (((int)temp_c));
 }
+#endif
 
 
 

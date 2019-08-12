@@ -277,13 +277,12 @@ void get_telemetry_data() {
   // Get the remaining non-GPS derived telemetry values.
   // Since these are not reliant on the GPS we assume that we will always be able to get valid values for these.
 #if defined (DS1820_TEMP_SENSOR_PRESENT)
-  g_orion_current_telemetry.temperature_c =  read_DS1820_temperature();
-#elseif
-  g_orion_current_telemetry.temperature_c =  read_TEMP36_temperature();
+  g_orion_current_telemetry.temperature_c = read_DS1820_temperature();
+#elif defined (TMP36_TEMP_SENSOR_PRESENT)
+  g_orion_current_telemetry.temperature_c = read_TEMP36_temperature();
 #else
-  g_orion_current_telemetry.temperature_c = 0;
+  g_orion_current_telemetry.temperature_c = read_processor_temperature();
 #endif
-  g_orion_current_telemetry.processor_temperature_c = read_processor_temperature();
   g_orion_current_telemetry.battery_voltage_v_x10 = read_voltage_v_x10();
 
 }

@@ -19,10 +19,20 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 int read_voltage_v_x10 ();
-int read_DS1820_temperature();
-int read_processor_temperature();
-uint8_t encode_temperature (int temperature_c);
-uint8_t encode_voltage (int voltage_v_x10);
+
 uint8_t encode_altitude (int altitude_m);
+uint8_t encode_temperature (int temperature_c);
+
+#if defined (TMP36_TEMP_SENSOR_PRESENT)
+int read_TEMP36_temperature();
+#endif
+
+#if defined (DS1820_TEMP_SENSOR_PRESENT)
+int read_DS1820_temperature();
+#endif
+
+#if !defined (DS1820_TEMP_SENSOR_PRESENT) && !defined TMP36_TEMP_SENSOR_PRESENT
+int read_processor_temperature();
+#endif
 
 #endif
