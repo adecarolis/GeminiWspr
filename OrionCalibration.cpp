@@ -233,7 +233,7 @@ void do_calibration(unsigned long calibration_step) {
   byte i;
   int timer_counter1 = 0;
 
-  log_calibration_start(); 
+orion_log("*** Starting Calibration ***");
 
   // We do 24 frequency samples at 10 seconds each ( ~ 4 minutes) so the maximum correction is 24 X calibration_step
   for (i = 0; i < 10; i++) {
@@ -289,11 +289,6 @@ void do_calibration(unsigned long calibration_step) {
         // Todo -  This should be handled by aborting and returning a Fail return code
         swerr(8, 0); // measured_rx_freq is zero so don't modify the calibration factor
       }
-
-      log_debug_Timer1_info(i, overflowCounter, timer_counter1);
-
-      // Log this iteration
-      log_calibration(measured_rx_freq, old_cal_factor, cal_factor );
 
       si5351bx_set_correction(cal_factor); // Update the correction factor and reset the frequency to use it
       si5351bx_setfreq(SI5351A_CAL_CLK_NUM, target_freq);

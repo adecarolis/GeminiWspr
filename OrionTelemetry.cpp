@@ -103,266 +103,193 @@ int read_processor_temperature() {
 }
 #endif
 
-
-
-uint8_t encode_temperature (int temperature_c) {
-  uint8_t ret_value = 0;
-
-  // Encoding of Temperature for PWR/dBm Field
-
-  switch ( temperature_c ){
-  
-    case 35 ... 100: // aka >= 35 celsius 
-      ret_value = 0;
-      break;
-
-    case 30 ... 34:
-      ret_value = 3;
-      break;
-
-    case 25 ... 29:
-      ret_value = 7;
-      break;
-
-    case 20 ... 24:
-      ret_value = 10;
-      break;
-
-    case 15 ... 19:
-      ret_value = 13;
-      break;
-
-    case 10 ... 14:
-      ret_value = 17;
-      break;
-
-    case 5 ... 9:
-      ret_value = 20;
-      break;
-
-    case 0 ... 4:
-      ret_value = 23;
-      break;
-
-    case -5 ... -1:
-      ret_value = 27;
-      break;
-
-    case -10 ... -6:
-      ret_value = 30;
-      break;
-
-    case -15 ... -11:
-      ret_value = 33;
-      break;
-
-    case -20 ... -16:
-      ret_value = 37;
-      break;
-
-    case -25 ... -21:
-      ret_value = 40;
-      break;
-
-    case -30 ... -26:
-      ret_value = 43;
-      break;
-
-    case -35 ... -31:
-      ret_value = 47;
-      break;
-
-    case -40 ... -36:
-      ret_value = 50;
-      break;
-
-    case -45 ... -41:
-      ret_value = 53;
-      break;
-
-    case -50 ... -46:
-      ret_value = 57;
-      break;
-
-    default: // less than -50 celsius
-      ret_value = 60;
-      break;
-
-  }
-  return ret_value;
-}
-
-uint8_t encode_voltage (int voltage_v_x10) {
-  uint8_t ret_value = 0;
-  
-  switch ( voltage_v_x10 ){  // Note: Divide voltage_v_x10 by 10 to get the actual voltage (i.e 36 = 3.6 v)
-  
-    case 33 : // aka >= 3.3 volts 
-      ret_value = 0;
-      break;
-      
-    case 34 :
-      ret_value = 3;
-      break;
-      
-    case 35 :
-      ret_value = 7;
-      break;
-      
-    case 36 :
-      ret_value = 10;
-      break;
-      
-    case 37 :
-      ret_value = 13;
-      break;
-      
-    case 38 :
-      ret_value = 17;
-      break;
-      
-    case 39 :
-      ret_value = 20;
-      break;
-      
-    case 40 :
-      ret_value = 23;
-      break;
-      
-    case 41 :
-      ret_value = 27;
-      break;
-      
-    case 42 :
-      ret_value = 30;
-      break;
-      
-    case 43 :
-      ret_value = 33;
-      break;
-      
-    case 44 :
-      ret_value = 37;
-      break;
-      
-    case 45 :
-      ret_value = 40;
-      break;
-      
-    case 46 :
-      ret_value = 43;
-      break;
-      
-    case 47 :
-      ret_value = 47;
-      break;
-      
-    case 48 :
-      ret_value = 50;
-      break;
-      
-    case 49 :
-      ret_value = 53;
-      break;
-      
-    case 50 :
-      ret_value = 57;
-      break;
-      
-    default: // greater than 5 volts
-      ret_value = 60;
-      break;
-
-  } // end switch (voltage)
-
-  return ret_value;
-
-}
-
 uint8_t encode_altitude (int altitude_m) {
   uint8_t ret_value = 0;
-
-  // Encoding of altitude in metres for PWR/dBm Field
-  // Note that on both ends of the scale the resolution is 500m whereas mid-scale it
-  // changes to 1000m resolution. 
  
   switch (altitude_m) { 
     
-    case 0 ... 499 :
+    case 0 ... 999 :
       ret_value = 0;
       break;
 
-    case 500 ... 999 :
+    case 1000 ... 1999 :
       ret_value = 3;
       break;
 
-    case 1000 ... 1499 :
+    case 2000 ... 2999 :
       ret_value = 7;
       break;
 
-    case 1500 ... 1999 :
+    case 3000 ... 3999 :
       ret_value = 10;
       break;
 
-    case 2000 ... 2499 :
+    case 4000 ... 4999 :
       ret_value = 13;
       break;
 
-    case 2500 ... 2999 :
+    case 5000 ... 5999 :
       ret_value = 17;
       break;
 
-    case 3000 ... 3999 :
+    case 6000 ... 6999 :
       ret_value = 20;
       break;
 
-    case 4000 ... 4999 :
+    case 7000 ... 7999 :
       ret_value = 23;
       break;
 
-    case 5000 ... 5999 :
+    case 8000 ... 8999 :
       ret_value = 27;
       break;
 
-    case 6000 ... 6999 :
+    case 9000 ... 9999 :
       ret_value = 30;
       break;
 
-    case 7000 ... 7999 :
+    case 10000 ... 10999 :
       ret_value = 33;
       break;
 
-    case 8000 ... 8499 :
+    case 11000 ... 11999 :
       ret_value = 37;
       break;
 
-    case 8500 ... 8999 :
+    case 12000 ... 12999 :
       ret_value = 40;
       break;
 
-    case 9000 ... 9499 :
+    case 13000 ... 13999 :
       ret_value = 43;
       break;
 
-    case 9500 ... 9999 :
+    case 14000 ... 14999 :
       ret_value = 47;
       break;
 
-    case 10000 ... 10499 :
+    case 15000 ... 15999 :
       ret_value = 50;
       break;
 
-    case 10500 ... 10999 :
+    case 16000 ... 16999 :
       ret_value = 53;
       break;
 
-    case 11000 ... 11499 :
+    case 17000 ... 17999 :
       ret_value = 57;
       break;
 
-    default : //  >= 12000 metres
+    default : //  >= 18000 metres
       ret_value = 60;
       break;
   }
   return ret_value;
+}
+
+int encode_solar_voltage_sats(uint8_t solar_voltage, uint8_t number_of_sats) {
+  // No solar voltage, for now
+  switch (number_of_sats) {
+    case 0 ... 3 :
+      return 0;
+      break;
+    case 4 ... 7 :
+      return 1;
+      break;
+    case 8 ... INT8_MAX :
+      return 2;
+      break;
+  }
+}
+
+char encode_battery_voltage(uint8_t battery_voltage) {
+  uint8_t encoded_voltage, encoded_altitude_fine;
+
+  switch (battery_voltage) {
+    case 0 ... 30 :
+      encoded_voltage = 0;
+      break;
+    case 31 ... 32 :
+      encoded_voltage = 1;
+      break;
+    case 33 ... 34 :
+      encoded_voltage = 2;
+      break;
+    case 35 ... 36 :
+      encoded_voltage = 3;
+      break;
+    case 37 ... 38 :
+      encoded_voltage = 4;
+      break;
+    case 39 ... 40 :
+      encoded_voltage = 5;
+      break;
+    case 41 ... 42 :
+      encoded_voltage = 6;
+      break;
+    case 43 ... 44 :
+      encoded_voltage = 7;
+      break;
+    case 45 ... 46 :
+      encoded_voltage = 8;
+      break;
+    case 47 ... 48 :
+      encoded_voltage = 9;
+      break;
+    case 49 ... 50 :
+      encoded_voltage = 10;
+      break;
+    case 51 ... INT8_MAX :
+      encoded_voltage = 11;
+      break;
+  }
+  return encoded_voltage + 'A';
+}
+
+char encode_temperature (int8_t temperature_c) {
+  char ret_value;
+
+  switch ( temperature_c ){
+  
+    case INT8_MIN ... -35:
+      ret_value = (char)0;
+      break;
+
+    case -34 ... -30:
+      ret_value = (char)1;
+      break;
+
+    case -29 ... -25:
+      ret_value = (char)2;
+      break;
+
+    case -24 ... -20:
+      ret_value = (char)3;
+      break;
+
+    case -19 ... -15:
+      ret_value = (char)4;
+      break;
+
+    case -14 ... -10:
+      ret_value = (char)5;
+      break;
+
+    case -9 ... -5:
+      ret_value = (char)6;
+      break;
+
+    case -4 ... 0:
+      ret_value = (char)7;
+      break;
+
+    case 1 ... 5:
+      ret_value = (char)8;
+      break;
+    
+    default:
+      ret_value = (char)9;
+    break;
+  }
+  return ret_value + 'A';
 }

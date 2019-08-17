@@ -18,10 +18,6 @@
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-int read_voltage_v_x10 ();
-
-uint8_t encode_altitude (int altitude_m);
-uint8_t encode_temperature (int temperature_c);
 
 #if defined (TMP36_TEMP_SENSOR_PRESENT)
 int read_TEMP36_temperature();
@@ -35,4 +31,9 @@ int read_DS1820_temperature();
 int read_processor_temperature();
 #endif
 
+int read_voltage_v_x10 ();
+uint8_t encode_altitude (int altitude_m);
+char encode_temperature (int8_t temperature_c);
+int encode_solar_voltage_sats(uint8_t solar_voltage, uint8_t number_of_sats);
+char encode_battery_voltage(uint8_t battery_voltage);
 #endif

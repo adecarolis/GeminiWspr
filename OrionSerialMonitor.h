@@ -27,15 +27,11 @@ enum OrionWsprMsgType {PRIMARY_WSPR_MSG, ALTITUDE_TELEM_MSG, TEMPERATURE_TELEM_M
 void swerr(byte swerr_num, int data);
 void serial_monitor_begin();
 void serial_monitor_interface();
-void orion_log_value(char msg[], unsigned long num);
 void orion_log(char msg[]);
 void orion_log_telemetry(struct OrionTxData *data);
-void orion_log_wspr_tx(OrionWsprMsgType msgType, char grid[], unsigned long freq_hz, uint8_t pwr_dbm);
+void orion_log_wspr_tx(char call[], char grid[], unsigned long freq_hz, uint8_t pwr_dbm);
 void orion_sm_trace_pre(byte state, byte event);
 void orion_sm_trace_post(byte state, byte processed_event,  byte resulting_action);
 bool is_qrm_avoidance_on();
 bool is_selfcalibration_on();  
-void log_debug_Timer1_info(byte i, int ofCount, int t_count);
-void log_calibration(uint64_t sampled_freq, int32_t o_cal_factor, int32_t n_cal_factor );
-void log_calibration_start(); 
 #endif

@@ -86,9 +86,6 @@ bool is_qrm_avoidance_on(){
   else
     return true;
 }
-void print_monitor_prompt(){
-  debugSerial.print(F("> "));
-}
 
 void print_date_time() {
   debugSerial.print(year());
@@ -126,13 +123,8 @@ void swerr(byte swerr_num, int data){
   debugSerial.print(F("***SWERR: "));
   debugSerial.print(swerr_num);
   debugSerial.print(F(" data dump in hex: "));
-  debugSerial.println(data, HEX); 
-  print_monitor_prompt(); 
-    
+  debugSerial.println(data, HEX);     
 }
-void println_cmd_list(){
-  debugSerial.println(F("cmds: v = f/w version, d = debug trace on/off, l = TX log on/off, i= info on/off, q = qrm avoidance on/off, ? = cmd list"));
-} 
 
 char *StateNames[] =
 {
@@ -175,7 +167,6 @@ void orion_sm_trace_pre(byte state, byte event){
   debugSerial.print(StateNames[state]);
   debugSerial.print(F(" curr_event: "));
   debugSerial.println(EventNames[event]);
-  print_monitor_prompt();  
 }
 
 void orion_sm_trace_post(byte state, byte processed_event,  byte resulting_action){
@@ -190,47 +181,22 @@ void orion_sm_trace_post(byte state, byte processed_event,  byte resulting_actio
   debugSerial.print(EventNames[processed_event]);
   debugSerial.print(F(" action: "));
   debugSerial.println(ActionNames[resulting_action]);
-  print_monitor_prompt();
-    
 }
 
-void orion_log_wspr_tx(OrionWsprMsgType msgType, char grid[], unsigned long freq_hz, uint8_t pwr_dbm){
+void orion_log_wspr_tx(char call[], char grid[], unsigned long freq_hz, uint8_t pwr_dbm){
 
   // If either txlog is turned on or info logs are turned on then log the TX
   if ((g_txlog_on_off == OFF) && (g_info_log_on_off == OFF)) return; 
   
   print_date_time();
-
-  switch (msgType) {
-    
-    case PRIMARY_WSPR_MSG :
-      debugSerial.print(F("Primary WSPR TX - Grid: "));
-      debugSerial.print(grid);
-      break;
-
-    case ALTITUDE_TELEM_MSG :
-      debugSerial.print(F("Telemetry WSPR TX - ALT-> "));
-      break;
-      
-    case TEMPERATURE_TELEM_MSG :
-      debugSerial.print(F("Telemetry WSPR TX - TEMP-> "));
-      break;
-      
-    case VOLTAGE_TELEM_MSG :
-      debugSerial.print(F("Telemetry WSPR TX - VOLT-> "));
-      break;
-
-    default :
-      break; 
-    
-  }
-    
-  debugSerial.print(F(" Pwr/dBm field:"));
-  debugSerial.print(pwr_dbm);
-  debugSerial.print(F(", Freq Hz: "));
-  debugSerial.println(freq_hz);
-  print_monitor_prompt();
-  
+  debugSerial.print(F("TX:"));
+  debugSerial.print(freq_hz);
+  debugSerial.print(F(" Call:"));
+  debugSerial.print(call);
+  debugSerial.print(F(" Locator:"));
+  debugSerial.print(grid);
+  debugSerial.print(F(" dbm:"));
+  debugSerial.println(pwr_dbm);  
 }
 
 void orion_log_telemetry (struct OrionTxData *data) {
@@ -257,52 +223,6 @@ void orion_log_telemetry (struct OrionTxData *data) {
   debugSerial.print( (*data).processor_temperature_c);
   debugSerial.print(F(", temp_c:"));
   debugSerial.println( (*data).temperature_c);
-  
-  
-  print_monitor_prompt();
-
-}
-
-void log_debug_Timer1_info(byte it,int ofCount, int t_count){
-  
-  if (g_debug_on_off == OFF) return; // Do nothing if debug disabled.
-  
-  debugSerial.print(F(" iteration: "));
-  debugSerial.print(it);
-  debugSerial.print(F(" overflowCounter: "));
-  debugSerial.print(ofCount);
-  debugSerial.print(F(" TCNT1: "));
-  debugSerial.println(t_count);
-  print_monitor_prompt();
-}
-
-// This is intended as a ligthweight notification of the start of calibration without all
-// of the gory details that log calibration provides. It is only logged if txlog is ON
-void log_calibration_start() {
-  if (g_txlog_on_off == OFF) return; 
-  
-  print_date_time();
-  debugSerial.println(F(" ** running CALIBRATION **"));
-  print_monitor_prompt();
-} 
-
-void log_calibration(uint64_t sampled_freq, int32_t o_cal_factor, int32_t n_cal_factor)
-{ 
-  if (g_info_log_on_off == OFF) return;
-  
-  uint32_t low = sampled_freq % 0xFFFFFFFF; 
-  uint32_t high = (sampled_freq >> 32) % 0xFFFFFFFF;
-
-  print_date_time();
-  debugSerial.print(F(" Sampled Freq Hz x 100 : "));
-  debugSerial.print(high);
-  debugSerial.print(low);
-  debugSerial.print(F(" Old Corr factor : "));
-  debugSerial.print(o_cal_factor);
-  debugSerial.print(F(" New Corr factor : "));
-  debugSerial.println(n_cal_factor);
-  print_monitor_prompt();
-  
 }
 
 void orion_log(char msg[])
@@ -310,7 +230,6 @@ void orion_log(char msg[])
   if (g_info_log_on_off == OFF) return;
   print_date_time();
   debugSerial.println(msg);
-  print_monitor_prompt();
 }
 
 void orion_log_value(char msg[], unsigned long num)
@@ -319,7 +238,6 @@ void orion_log_value(char msg[], unsigned long num)
   debugSerial.print(msg);
   debugSerial.print(F(" "));
   debugSerial.println(num, DEC);
-  print_monitor_prompt();
 }
 
 /**********************
@@ -330,77 +248,5 @@ void serial_monitor_begin(){
   
   // Start software serial port 
   debugSerial.begin(MONITOR_SERIAL_BAUD);
-  debugSerial.println(F("Initialising Orion Serial Monitor...."));
-  println_cmd_list();
-  print_monitor_prompt();
   delay(500);
-}
-
-static void flush_input(void){
-
-  while (debugSerial.available() > 0)
-    debugSerial.read();
-}
-
-void serial_monitor_interface(){
- 
-  if (debugSerial.available() > 0){
-    char c = debugSerial.read();
-    
-    debugSerial.println(c); // echo the typed character
-    
-    switch (c) {
-      
-      case 'v' :
-        flush_input();
-        debugSerial.print(F("Orion firmware version: "));
-        debugSerial.print(ORION_FW_VERSION);
-        debugSerial.println(BOARDNAME);
-        break;
-
-       case 'd' : // toggle debug flag
-       flush_input();
-       debugSerial.print(F("Orion debug tracing is : "));
-       g_debug_on_off = toggle_on_off(g_debug_on_off);
-       break;
-
-       case 'c' : // toggle calibration flag
-       flush_input();
-       debugSerial.print(F("Orion self calibration is : "));
-       g_selfcalibration_on_off = toggle_on_off(g_selfcalibration_on_off);
-       break;
-
-       case 'l' : // toggle TX log flag
-       flush_input();
-       debugSerial.print(F("Orion TX log is : "));
-       g_txlog_on_off = toggle_on_off(g_txlog_on_off);
-       break;
-
-       case 'h': case '?' : // list commands
-       flush_input();
-       println_cmd_list();
-       break;
-
-       case'q' :
-       flush_input();
-       debugSerial.print(F("Orion QRM avoidance is : "));
-       g_qrm_avoidance_on_off = toggle_on_off(g_qrm_avoidance_on_off);
-       break;
-
-       case'i' :
-       flush_input();
-       debugSerial.print(F("Orion info logs are : "));
-       g_info_log_on_off = toggle_on_off(g_info_log_on_off);
-       break;
-               
-      default:
-        flush_input();
-        debugSerial.println(F(" -- unrecognized command"));
-        println_cmd_list();
-       
-        // Do nothing
-    }
-    print_monitor_prompt();
-  }
- 
 }

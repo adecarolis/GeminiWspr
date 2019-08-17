@@ -40,9 +40,11 @@
 #define BEACON_CALLSIGN_6CHAR   "K1FM"      // Your beacon Callsign, maximum of 6 characters
 #define BEACON_GRID_SQ_4CHAR    "FN30"        // Your hardcoded 4 character Grid Square - this will be overwritten with GPS derived Grid
 #define BEACON_TX_PWR_DBM          7          // Beacon Power Output in dBm (5mW = 7dBm)
+#define BEACON_CHANNEL_ID_1     'Q'
+#define BEACON_CHANNEL_ID_2     '9'  
 
 // This defines how often we reset the Arduino Clock to the current GPS time 
-#define TIME_SET_INTERVAL_MS   5000           // 5,000 ms    = 5 seconds
+#define TIME_SET_INTERVAL_MS   5000           // 300,000 ms    = 5 seconds
 #define CALIBRATION_INTERVAL   600000         // 600,000 ms  = 10 minutes
 
 // Type Definitions
