@@ -441,7 +441,7 @@ uint8_t get_gps_fix_and_time() {
       }
 
      if (h_chrono.elapsed() - start > 600000) {
-       orion_log("Error: No GPS fix after 10 minutes, BEACON_CHANNEL_ID_1");
+       orion_log("Error: No GPS fix after 10 minutes, giving up");
        failed = true;
        break;
      }
