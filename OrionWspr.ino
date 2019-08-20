@@ -119,6 +119,9 @@ LightChrono g_chrono, h_chrono;
 NeoSWSerial gpsPort(SOFT_SERIAL_RX_PIN, SOFT_SERIAL_TX_PIN);  // RX, TX
 #endif
 
+// Allow software reset
+void(* resetSoftware)(void) = 0;
+
 // We initialize this to 61 so the first time through the scheduler we can't possibly match the current second
 // This forces the scheduler to run on its very first call.
 byte g_last_second = 61;
@@ -442,6 +445,7 @@ uint8_t get_gps_fix_and_time() {
 
      if (h_chrono.elapsed() - start > 600000) {
        orion_log("Error: No GPS fix after 10 minutes, giving up");
+       resetSoftware();
        failed = true;
        break;
      }
