@@ -248,5 +248,6 @@ void serial_monitor_begin(){
   
   // Start software serial port 
   debugSerial.begin(MONITOR_SERIAL_BAUD);
-  delay(500);
+  while (!debugSerial)
+    ;
 }
