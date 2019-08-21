@@ -250,4 +250,5 @@ void serial_monitor_begin(){
   debugSerial.begin(MONITOR_SERIAL_BAUD);
   while (!debugSerial)
     ;
+  debugSerial.flush();
 }
