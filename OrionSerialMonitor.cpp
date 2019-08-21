@@ -232,14 +232,6 @@ void orion_log(char msg[])
   debugSerial.println(msg);
 }
 
-void orion_log_value(char msg[], unsigned long num)
-{
-  print_date_time();
-  debugSerial.print(msg);
-  debugSerial.print(F(" "));
-  debugSerial.println(num, DEC);
-}
-
 /**********************
 /* Serial Monitor code 
 /**********************/

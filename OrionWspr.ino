@@ -93,6 +93,7 @@
 #define GPS_PORT_NAME "Serial"
 #else
 #include <NeoSWSerial.h>
+#include <Streamers.h>
 #define GPS_PORT_NAME "NeoSWSerial"
 #endif
 
@@ -406,73 +407,34 @@ void encode_and_tx_wspr_msg() {
   delay(1000); // Delay one second
 } // end of encode_and_tx_wspr_msg()
 
-uint8_t get_gps_fix_and_time() {
-  /*********************************************
-    Get the latest GPS Fix
-  * ********************************************/
-  unsigned long start, partial = 0;
-  bool failed = false;
-
-  start = h_chrono.elapsed();
-  while (not gps.available(gpsPort)) {
-     if (h_chrono.elapsed() - start > 60000) {
-      // If no there is no data from the GPS after 1 minute
-      // then something is seriously wrong. Let's reset the unit 
-      orion_log("Error: GPS not available");
-      // Power cycle if supported
-#if defined(GPS_POWER_DISABLE_SUPPORTED)
-  pinMode(GPS_POWER_DISABLE_PIN, OUTPUT);
-  digitalWrite(GPS_POWER_DISABLE_PIN, HIGH);
-  delay(500);
-  pinMode(GPS_POWER_DISABLE_PIN, OUTPUT);
-  digitalWrite(GPS_POWER_DISABLE_PIN, LOW);
-#else
-  // otherwise do a software reset
-  gps.reset();
-#endif
-       failed = true;
-       break;
+uint8_t gps_fix() {
+  unsigned long start, partial = h_chrono.elapsed();
+  trace_all( Serial, gps, fix );
+  while (1) {
+    while (gps.available( gpsPort )) {
+      fix = gps.read();
+      if (fix.valid.location) {
+        setTime(fix.dateTime.hours,
+                fix.dateTime.minutes,
+                fix.dateTime.seconds,
+                fix.dateTime.date,
+                fix.dateTime.month, 
+                fix.dateTime.year);
+          return 0;
+          break;
+      }
+    }
+    if (h_chrono.elapsed() - partial > 5000) { // do something every 5 seconds
+      trace_all( Serial, gps, fix );
+      partial = h_chrono.elapsed();
+    }
+    if (h_chrono.elapsed() - start > 1200000) { // no fix in 20 minutes
+      h_chrono.restart();
+      return 1;
+      break;
     }
   }
-
-  start, partial = h_chrono.elapsed();
-  do {
-    fix = gps.read();
-      if (h_chrono.elapsed() - partial > 30000 ) {
-       orion_log("No GPS fix yet... still trying");
-       partial = h_chrono.elapsed();
-      }
-
-     if (h_chrono.elapsed() - start > 600000) {
-       orion_log("Error: No GPS fix after 10 minutes, giving up");
-       resetSoftware();
-       failed = true;
-       break;
-     }
-  }
-  while (not fix.valid.location);
-  
-  if (not failed) {
-    setTime(fix.dateTime.hours,
-            fix.dateTime.minutes,
-            fix.dateTime.seconds,
-            fix.dateTime.date,
-            fix.dateTime.month, 
-            fix.dateTime.year);
-  } else { // Failed to get a GPS Fix
-    return 1;
-  }
-
-    // If we are using the SYNC_LED
-#if defined (SYNC_LED_PRESENT)
-    if (timeStatus() == timeSet)
-      digitalWrite(SYNC_LED_PIN, HIGH); // Turn LED on if the time is synced
-    else
-      digitalWrite(SYNC_LED_PIN, LOW); // Turn LED off
-#endif
-}  // end get_gps_fix_and_time()
-
-
+}
 
 OrionAction process_orion_sm_action (OrionAction action) {
   /****************************************************************************************************
@@ -490,7 +452,7 @@ OrionAction process_orion_sm_action (OrionAction action) {
       break;
 
     case DO_GPS_FIX :
-      result = get_gps_fix_and_time();
+      result = gps_fix();
       if (result == 0) {
         returned_action = orion_state_machine(GPS_READY);
       } else {
@@ -677,24 +639,8 @@ void setup() {
 
 void loop() {
 
-  /*if (orion_sm_get_current_state()== CALIBRATE_ST) {
-    while (timeStatus() == timeNotSet ) { // System date/time isn't set yet
-     get_gps_fix_and_time(); // Try to get a GPS fix
-     delay(1000); // Wait one second
-    }
-
-    }
-  */
-
-  /*
-     Set the crhono every 5 seconds. This is subobptimal but in the absence of an RTC chip
-     the onboard clock tends to drift significantly.
-     Calling prepare_telemetry() to printout the current telemetry data
-  */
-
   if (h_chrono.hasPassed(TIME_SET_INTERVAL_MS, true)) {
-    prepare_telemetry(0); // TBD: A more specific loggin function needs to be used here
-    get_gps_fix_and_time();
+    gps_fix();
   }
   
   // This triggers actual work when the state machine returns an OrionAction
