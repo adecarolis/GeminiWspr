@@ -409,7 +409,7 @@ void encode_and_tx_wspr_msg() {
 
 uint8_t gps_fix() {
   unsigned long start, partial = h_chrono.elapsed();
-  trace_all( Serial, gps, fix );
+  // Status,UTC Date/Time,Lat,Lon,Hdg,Spd,Alt,Sats,Rx ok,Rx err,Rx chars,
   while (1) {
     while (gps.available( gpsPort )) {
       fix = gps.read();
@@ -646,6 +646,9 @@ void loop() {
 
   if (h_chrono.hasPassed(TIME_SET_INTERVAL_MS, true)) {
     gps_fix();
+    // For logging only:
+    get_telemetry_data();
+    set_tx_data(0);    
   }
   
   // This triggers actual work when the state machine returns an OrionAction
