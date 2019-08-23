@@ -621,6 +621,11 @@ void setup() {
   // Setup the software serial port for the serial monitor interface
   serial_monitor_begin();
 
+#if defined (GPS_BALLOON_MODE_COMMAND)
+  gps.send_P( &gpsPort, (const __FlashStringHelper *) GPS_BALLOON_MODE_COMMAND );
+  delay( 250 );
+#endif
+
   // Set the intial state for the Orion Beacon State Machine
   orion_sm_begin();
 
