@@ -81,6 +81,7 @@
 #include "OrionSerialMonitor.h"
 #include "OrionCalibration.h"
 #include "OrionTelemetry.h"
+#include "OrionCW.h"
 
 // NOTE THAT ALL #DEFINES THAT ARE INTENDED TO BE USER CONFIGURABLE ARE LOCATED IN OrionXConfig.h and OrionBoardConfig.h
 // DON'T TOUCH ANYTHING DEFINED IN THIS FILE WITHOUT SOME VERY CAREFUL CONSIDERATION.
@@ -350,6 +351,40 @@ void prepare_telemetry(uint8_t minute) {
 
 } //end prepare_telemetry
 
+void encode_and_tx_cw_msg(uint8_t times) {
+  uint8_t i;
+  char str[8];
+  for (i=0; i<times; i++) {
+    send_cw("VVV", 3);
+    send_cw("CQ", 1);
+    send_cw("DE", 1);
+
+    sprintf(str, "%s/B", BEACON_CALLSIGN_6CHAR);
+    send_cw(str, 3);
+
+    send_cw("QTH", 1);
+    send_cw(g_tx_data.grid_sq_6char, 3);
+
+    send_cw("QAH", 1);
+    sprintf(str, "%dM", g_tx_data.altitude_m);
+    send_cw(str, 3);
+
+    send_cw("QMX",1);
+    sprintf(str, "%dC", g_tx_data.temperature_c);
+    send_cw(str, 3);
+
+    send_cw("BAT",1);
+    sprintf(str, "%hdV", g_tx_data.battery_voltage_v_x10) ;
+    send_cw(str, 3);
+
+    send_cw("DE", 1);
+    sprintf(str, "%s/B", BEACON_CALLSIGN_6CHAR);
+    send_cw(str, 3);
+    
+    send_cw("K", 1);
+  }
+}
+
 void encode_and_tx_wspr_msg() {
   /**************************************************************************
     Transmit the Primary WSPR Message
@@ -470,6 +505,13 @@ OrionAction process_orion_sm_action (OrionAction action) {
 
       returned_action = orion_state_machine(CALIBRATION_DONE);
       break;
+    
+    case DO_CW_TX :
+      prepare_telemetry(0);
+      orion_log_wspr_tx(g_beacon_callsign, g_grid_loc, g_beacon_freq_hz, g_tx_pwr_dbm);
+      encode_and_tx_cw_msg(1);
+      returned_action = orion_state_machine(TX_DONE);
+      break;
 
     case DO_WSPR_TX :
 
@@ -492,7 +534,7 @@ OrionAction process_orion_sm_action (OrionAction action) {
       encode_and_tx_wspr_msg();
 
       // Tell the Orion state machine that we are done tranmitting the Primary WSPR message and update the current_action
-      returned_action = orion_state_machine(WSPR_TX_DONE);
+      returned_action = orion_state_machine(TX_DONE);
       break;
 
     default :
@@ -535,10 +577,8 @@ OrionAction orion_scheduler() {
 
         // Primary WSPR Transmission Triggers every 10th minute of the hour on the first second
         case 0 :
-          // TDB
-          break;
         case 30 :
-          // TDB
+          return (orion_state_machine(CW_TX_TIME));
           break;
         default :
           if (Minute % 2 == 0 && Second == 0) {
@@ -643,12 +683,12 @@ void setup() {
 
 
 void loop() {
-
+  
   if (h_chrono.hasPassed(TIME_SET_INTERVAL_MS, true)) {
     gps_fix();
     // For logging only:
     get_telemetry_data();
-    set_tx_data(0);    
+    set_tx_data(0);
   }
   
   // This triggers actual work when the state machine returns an OrionAction

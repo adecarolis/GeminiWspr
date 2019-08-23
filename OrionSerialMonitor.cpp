@@ -132,7 +132,7 @@ char *StateNames[] =
     "WAIT_GPS_READY",
     "CALIBRATE",
     "WAIT_TX",
-    "WSPR_TX"
+    "TX"
 };
 
 char *EventNames[] =
@@ -143,7 +143,8 @@ char *EventNames[] =
   "SETUP_DONE",
   "CALIBRATION_DONE",
   "WSPR_TX_TIME",
-  "WSPR_TX_DONE",
+  "WSPR_CW_TIME",
+  "TX_DONE",
   "TIMER_EXPIRED"
 };
 
@@ -152,7 +153,8 @@ char *ActionNames[] =
   "NO_ACTION",
   "DO_GPS_FIX",
   "DO_CALIBRATION",
-  "DO_WSPR_TX"
+  "DO_WSPR_TX",
+  "DO_CW_TX"
 };
 
 

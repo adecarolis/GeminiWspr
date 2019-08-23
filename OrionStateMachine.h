@@ -18,11 +18,11 @@
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-enum OrionState {POWER_UP, WAIT_GPS_READY, CALIBRATE, WAIT_TX, WSPR_TX};
+enum OrionState {POWER_UP, WAIT_GPS_READY, CALIBRATE, WAIT_TX, TX};
                  
-enum OrionEvent {NO_EVENT, GPS_READY, GPS_FAIL, SETUP_DONE, CALIBRATION_DONE, WSPR_TX_TIME, WSPR_TX_DONE, TIMER_EXPIRED};
+enum OrionEvent {NO_EVENT, GPS_READY, GPS_FAIL, SETUP_DONE, CALIBRATION_DONE, WSPR_TX_TIME, CW_TX_TIME, TX_DONE, TIMER_EXPIRED};
 
-enum OrionAction {NO_ACTION, DO_GPS_FIX, DO_CALIBRATION, DO_WSPR_TX}; 
+enum OrionAction {NO_ACTION, DO_GPS_FIX, DO_CALIBRATION, DO_WSPR_TX, DO_CW_TX}; 
 void orion_sm_begin();
 
 OrionState orion_sm_get_current_state();

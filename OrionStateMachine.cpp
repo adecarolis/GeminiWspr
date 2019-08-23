@@ -106,9 +106,14 @@ OrionAction orion_state_machine(OrionEvent event) {
     case WAIT_TX :  // Waiting for the next WSPR transmission slot
       if (event == WSPR_TX_TIME) {
         // Time to transmit
-        orion_sm_change_state(WSPR_TX);
+        orion_sm_change_state(TX);
         next_action = DO_WSPR_TX;
-      } else if (event == TIMER_EXPIRED) {
+      }
+      else if (event == CW_TX_TIME) {
+        orion_sm_change_state(TX);
+        next_action = DO_CW_TX;
+      } 
+      else if (event == TIMER_EXPIRED) {
         orion_sm_change_state(WAIT_GPS_READY);
         next_action = DO_GPS_FIX;
       }
@@ -116,9 +121,9 @@ OrionAction orion_state_machine(OrionEvent event) {
         swerr(3, event); // This event is not supported in this state
       break;
 
-    case WSPR_TX :  // WSPR Transmission
+    case TX :  // Transmission
 
-      if (event == WSPR_TX_DONE) { // Time to send Primary WSPR MSG
+      if (event == TX_DONE) {
         orion_sm_change_state(WAIT_TX);
       } else if (event == TIMER_EXPIRED) {
         orion_sm_change_state(WAIT_GPS_READY);
