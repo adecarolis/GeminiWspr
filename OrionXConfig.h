@@ -45,7 +45,7 @@
 #define BEACON_CHANNEL_ID_2     '9'  
 
 // This defines how often we reset the Arduino Clock to the current GPS time 
-#define TIME_SET_INTERVAL_MS   5000           // 300,000 ms    = 5 seconds
+#define TIME_SET_INTERVAL_MS   30000          // 30,000 ms   = 30 seconds
 #define CALIBRATION_INTERVAL   600000         // 600,000 ms  = 10 minutes
 
 // Type Definitions
