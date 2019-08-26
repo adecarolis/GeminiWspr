@@ -63,7 +63,8 @@ char morsetab[] = {
   115,// ,
   106,// .
   76, // ?
-  41  // '/'
+  41, // '/'
+  193 // '-'
 };
 
 #define N_MORSE  (sizeof(morsetab)/sizeof(morsetab[0]))
@@ -104,6 +105,8 @@ send_char(char c)
       i = 38;
     else if (i == 47) // '/'
       i = 39;
+    else if (i == 45) // '-'
+      i = 40;
     Serial.print(c) ;
     unsigned char p = morsetab[i] ;
     while (p != 1) {

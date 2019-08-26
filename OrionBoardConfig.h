@@ -36,7 +36,7 @@
 // Processor talks to Si5351a using software I2C
 //#define SI5351A_USES_SOFTWARE_I2C       // Comment out if  ATMEGA328p communicates with the Si5351a via Hardware I2C
 
-#define SI5351_SELF_CALIBRATION_SUPPORTED  true // set to false if No Self calibration. It requires an unused Si5351 CLK output fed back to D5 
+#define SI5351_SELF_CALIBRATION_SUPPORTED  false // set to false if No Self calibration. It requires an unused Si5351 CLK output fed back to D5 
 
 // Self Calibration uses External Interrupt on PIN D2 or D3 for GPS PPS signal.
 // Comment this out if using PinChangeInterrupt on any other PIN 
