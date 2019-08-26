@@ -355,7 +355,7 @@ void encode_and_tx_cw_msg(uint8_t times) {
   uint8_t i;
   char str[8];
   for (i=0; i<times; i++) {
-    send_cw("VVV", 3);
+    send_cw("VVV", 2);
     send_cw("CQ", 1);
     send_cw("DE", 1);
 
@@ -363,19 +363,19 @@ void encode_and_tx_cw_msg(uint8_t times) {
     send_cw(str, 3);
 
     send_cw("QTH", 1);
-    send_cw(g_tx_data.grid_sq_6char, 3);
+    send_cw(g_tx_data.grid_sq_6char, 2);
 
     send_cw("QAH", 1);
     sprintf(str, "%dM", g_tx_data.altitude_m);
-    send_cw(str, 3);
+    send_cw(str, 2);
 
     send_cw("QMX",1);
     sprintf(str, "%dC", g_tx_data.temperature_c);
-    send_cw(str, 3);
+    send_cw(str, 2);
 
     send_cw("BAT",1);
     sprintf(str, "%hdV", g_tx_data.battery_voltage_v_x10) ;
-    send_cw(str, 3);
+    send_cw(str, 2);
 
     send_cw("DE", 1);
     sprintf(str, "%s/B", BEACON_CALLSIGN_6CHAR);
@@ -509,7 +509,7 @@ OrionAction process_orion_sm_action (OrionAction action) {
     case DO_CW_TX :
       prepare_telemetry(0);
       orion_log_wspr_tx(g_beacon_callsign, g_grid_loc, g_beacon_freq_hz, g_tx_pwr_dbm);
-      encode_and_tx_cw_msg(1);
+      encode_and_tx_cw_msg(2);
       returned_action = orion_state_machine(TX_DONE);
       break;
 
@@ -683,7 +683,7 @@ void setup() {
 
 
 void loop() {
-  
+
   if (h_chrono.hasPassed(TIME_SET_INTERVAL_MS, true)) {
     gps_fix();
     // For logging only:
