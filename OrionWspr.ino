@@ -343,10 +343,10 @@ void set_tx_data(uint8_t msg_type) {
 void prepare_telemetry(uint8_t minute) {
   get_telemetry_data();
 
-  if (minute % 4 != 0) {
-    set_tx_data(0);
-  } else {
+  if (minute % 8 == 0) {
     set_tx_data(1);
+  } else {
+    set_tx_data(0);
   }
 
 } //end prepare_telemetry
@@ -683,7 +683,7 @@ void setup() {
 
 
 void loop() {
-
+  
   if (h_chrono.hasPassed(TIME_SET_INTERVAL_MS, true)) {
     gps_fix();
     // For logging only:
