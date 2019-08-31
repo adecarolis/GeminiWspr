@@ -381,7 +381,7 @@ void encode_and_tx_cw_msg(uint8_t times) {
     sprintf(str, "%s/B", BEACON_CALLSIGN_6CHAR);
     send_cw(str, 3);
     
-    send_cw("K", 1);
+    send_cw("K  ", 1);
   }
 }
 
