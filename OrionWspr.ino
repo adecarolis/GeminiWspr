@@ -677,6 +677,10 @@ void setup() {
   h_chrono.start();
 
   // Tell the state machine that we are done SETUP
+  char str[8];
+  sprintf(str, "%s/B", BEACON_CALLSIGN_6CHAR);
+  send_cw(str, 2);
+
   g_current_action = orion_state_machine(SETUP_DONE);
 
 } // end setup()
