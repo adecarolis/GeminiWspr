@@ -571,22 +571,22 @@ OrionAction orion_scheduler() {
 
     Minute = minute();
 
-    if (Second == 0) {
-
-      switch (Minute) {
-
-        // Primary WSPR Transmission Triggers every 10th minute of the hour on the first second
-        case 0 :
-        case 30 :
+    switch (Minute) {
+      case 0 :
+      case 30 :
+        if (Second == 0) {
           return (orion_state_machine(CW_TX_TIME));
-          break;
-        default :
-          if (Minute % 2 == 0 && Second == 0) {
-            return (orion_state_machine(WSPR_TX_TIME));
-          }
-          break;
-      } // end switch (Minute)
-    } // end if (Second == 0)
+        }
+        break;
+
+      default :
+        if (Minute % 2 == 0 && Second == 1) {
+          return (orion_state_machine(WSPR_TX_TIME));
+        }
+        break;
+
+    } // end switch (Minute)
+
   } // end if timestatus == timeset
 
   return returned_action;
