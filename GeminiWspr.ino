@@ -1,32 +1,8 @@
 // GeminiWspr.ino - Gemini WSPR Beacon for pico-Balloon payloads using Arduino
 //
-// This code implements a very low power Arduino HF WSPR Beacon using a Silicon Labs Si5351a clock chip
-// as the beacon transmitter and a GPS receiver module for time and location fix.
+// * Heavily based on OrionWspr by Michael Babineau, VE3WMB - https://github.com/ve3wmb/OrionWspr
+// * Copyright 2019 Alain De Carolis, K1FM <alain@alain.it>
 //
-// This work is dedicated to the memory of my very dear friend Ken Louks, WA8REI(SK)
-// - Michael Babineau, VE3WMB - March 4, 2019.
-//
-// Why is it called Gemini?
-// Serendipity! I was trying to think of a reasonable short name for this code one evening
-// while sitting on the couch watching Netflix. I happened to look out at the night sky thorough
-// the window and there was the constellation Gemini staring back at me, so Gemini it is.
-//
-// I wish that I could say that I came up with this code all on my own, but for the most part
-// it is based on excellent work done by people far more clever than I am.
-//
-// It was derived from the Simple WSPR beacon for Arduino Uno, with the Etherkit Si5351A Breakout
-// Board, by Jason Milldrum NT7S whose original code was itself based on Feld Hell beacon for Arduino by Mark
-// Vandewettering K6HX and adapted for the Si5351A by Robert Liesenfeld AK6L <ak6l@ak6l.org>.
-// Timer setup code by Thomas Knutsen LA3PNA. Time code adapted from the TimeSerial.ino example from the Time library.
-//
-// The original Si5351 Library code (from Etherkit .. aka NT7S) was replaced by self-contained SI5315 routines
-// written Jerry Gaffke, KE7ER. The KE7ER code was modified by VE3WMB to use 64 bit precision in the calculations to
-// enable the sub-Hz resolution needed for WSPR and to allow Software I2C usage via the inclusion of <SoftWire.h>.
-//
-// Code modified and added by Michael Babineau, VE3WMB for Project Aries pico-Balloon WSPR Beacon (2018/2019)
-// This additional code is Copyright (C) 2018-2019 Michael Babineau <mbabineau.ve3wmb@gmail.com>
-
-
 // Hardware Requirements
 // ---------------------
 // This firmware must be run on an Arduino or an AVR microcontroller with the Arduino Bootloader installed.

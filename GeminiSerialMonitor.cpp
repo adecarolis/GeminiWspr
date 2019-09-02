@@ -1,7 +1,8 @@
 /*
  * GeminiSerialMonitor.cpp - Simple Software Serial system monitor for Gemini WSPR Beacon
  *
- * Copyright 2019 Michael Babineau, VE3WMB <mbabineau.ve3wmb@gmail.com>
+ * Heavily based on OrionWspr by Michael Babineau, VE3WMB - https://github.com/ve3wmb/OrionWspr
+ * Copyright 2019 Alain De Carolis, K1FM <alain@alain.it>
  *                          
  * This sketch  is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

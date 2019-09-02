@@ -1,9 +1,10 @@
 #ifndef GEMINISTATEMACHINE_H
 #define GEMINISTATEMACHINE_H
 /*
-    GeminiStateMachine.h - Definitions for control of Gemini WSPR Beacon
+   GeminiStateMachine.h - Definitions for control of Gemini WSPR Beacon
 
-   Copyright (C) 2018-2019 Michael Babineau <mbabineau.ve3wmb@gmail.com>
+   Heavily based on OrionWspr by Michael Babineau, VE3WMB - https://github.com/ve3wmb/OrionWspr
+   Copyright 2019 Alain De Carolis, K1FM <alain@alain.it>
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by

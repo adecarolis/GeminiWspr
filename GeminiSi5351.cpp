@@ -1,8 +1,9 @@
 /*
- * GeminiSi5351.cpp - Control functions for the Si5351a chip via I2C 
- * (software I2C assumed for compatibiltiy with the QRP Labs U3S and clones).
+   GeminiSi5351.cpp - Control functions for the Si5351a chip via I2C 
+   (software I2C assumed for compatibiltiy with the QRP Labs U3S and clones).
 
-   Copyright (C) 2018-2019 Michael Babineau <mbabineau.ve3wmb@gmail.com>
+   Heavily based on OrionWspr by Michael Babineau, VE3WMB - https://github.com/ve3wmb/OrionWspr
+   Copyright 2019 Alain De Carolis, K1FM <alain@alain.it>
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by

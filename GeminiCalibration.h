@@ -1,9 +1,10 @@
 #ifndef GEMINICALIBRATION_H
 #define GEMINICALIBRATION_H
 /*
-    GeminiCalibbration.h - Definitions for Gemini SI5351 Self Calibration
+   GeminiCalibration.h - Definitions for Gemini SI5351 Self Calibration
 
-   Copyright (C) 2018-2019 Michael Babineau <mbabineau.ve3wmb@gmail.com>
+   Heavily based on OrionWspr by Michael Babineau, VE3WMB - https://github.com/ve3wmb/OrionWspr
+   Copyright 2019 Alain De Carolis, K1FM <alain@alain.it>
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by

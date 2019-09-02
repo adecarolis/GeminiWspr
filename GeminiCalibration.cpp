@@ -16,7 +16,8 @@
    After each 10 second sample a frequency correction factor is applied using a Huff&Puff algorithm.
    Each calibration cycle samples and corrects for 24 iterations so takes approximately 4 minutes.
 
-   Copyright 2019 Michael Babineau, VE3WMB <mbabineau.ve3wmb@gmail.com>
+   Heavily based on OrionWspr by Michael Babineau, VE3WMB - https://github.com/ve3wmb/OrionWspr
+   Copyright 2019 Alain De Carolis, K1FM <alain@alain.it>
 
 
    This sketch  is free software: you can redistribute it and/or modify
