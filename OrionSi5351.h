@@ -1,7 +1,7 @@
-#ifndef ORIONSI5351_H
-#define ORIONSI5351_H
+#ifndef GEMINISI5351_H
+#define GEMINISI5351_H
 /*
-    OrionSi5351.h - Definitions for control of Si5351a chip via I2C 
+    GeminiSi5351.h - Definitions for control of Si5351a chip via I2C 
    (software I2C assumed for compatibiltiy with the QRP Labs U3S and clones).
 
    Copyright (C) 2018-2019 Michael Babineau <mbabineau.ve3wmb@gmail.com>

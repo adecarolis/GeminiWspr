@@ -1,7 +1,7 @@
-#ifndef ORIONBOARDCONFIG_H
-#define ORIONBOARDCONFIG_H
+#ifndef GEMINIBOARDCONFIG_H
+#define GEMINIBOARDCONFIG_H
 
- //  K1FMv1r1BoardConfig.h - Orion Board Configuration for K1FM PicoBv1.1 board
+ //  K1FMv1r1BoardConfig.h - Gemini Board Configuration for K1FM PicoBv1.1 board
  //  SW serial to GPS, HW serial for debug monitor, Hardware I2C
 
 /*
@@ -22,7 +22,7 @@
 */
 #include <Arduino.h>
 
-// THIS FILE CONTAINS THE USER MODIFIABLE #DEFINES TO CONFIGURE A SPECIFIC BOARD TO USE THE ORION WSPR BEACON CODE
+// THIS FILE CONTAINS THE USER MODIFIABLE #DEFINES TO CONFIGURE A SPECIFIC BOARD TO USE THE GEMINI WSPR BEACON CODE
 
 #define BOARDNAME " - K1FM v1.1"        // This string is output along with code version using the 'v' command in the monitor
 
@@ -100,8 +100,8 @@ Arduino Hardware Pin Configurations - change these to match your specific hardwa
 
 /*********************************************************************************************************************** 
 *  You need to calibrate your Si5351a and substitute the your correction value for SI5351A_CLK_FREQ_CORRECTION below.
-*  See OrionSi5351_calibration.ino sketch. You may also need to modify SI5351BX_XTALPF
-*  in OrionSi5351.h if you need a crystal load capacitance other that 8 pf.
+*  See GeminiSi5351_calibration.ino sketch. You may also need to modify SI5351BX_XTALPF
+*  in GeminiSi5351.h if you need a crystal load capacitance other that 8 pf.
 ************************************************************************************************************************/
 #define SI5351A_CLK_FREQ_CORRECTION  0    //You must modify this with the correction factor for the Si5351a clock
 
@@ -118,7 +118,7 @@ Arduino Hardware Pin Configurations - change these to match your specific hardwa
 // GPS Serial port Baud rate - For now only a hardware serial connection to the GPS is supported.
 #define GPS_SERIAL_BAUD         9600          // Baudrate for the GPS Serial port
 
-#define MONITOR_SERIAL_BAUD     9600          // Baudrate for Orion Serial Monitor      
+#define MONITOR_SERIAL_BAUD     9600          // Baudrate for Gemini Serial Monitor      
 
 
 /***********************************************************

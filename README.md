@@ -1,4 +1,4 @@
-# OrionWspr
+# GeminiWspr
 
 
 Consider this to be Alpha Software. Current version is: v0.17a
@@ -15,7 +15,7 @@ and hard-code that in the BoardConfig.h file.
 
 Notes on Software Versioning:
 
-#define ORION_FW_VERSION "v0.08a" // in OrionSerialMonitor.h update with each submission to github
+#define GEMINI_FW_VERSION "v0.08a" // in GeminiSerialMonitor.h update with each submission to github
 
 Whole numbers are for released versions. (i.e. 1.0, 2.0 etc.)
 Numbers to the right of the decimal are allocated consecutively, one per GITHUB submission.(i.e. 0.01, 0.02 etc)
@@ -24,17 +24,17 @@ a=alpha b=beta, r=release
 
 Changelog : 
 v017a - Phase two of Telemetry. This implements the VE3GTC KISS Telemetry scheme, encoding data into the WSPR message Pwr/dBm field.
-It includes Orion State Machine and scheduler changes to enable the transmission of a secondary WSPR message carrying telemetry at 
+It includes Gemini State Machine and scheduler changes to enable the transmission of a secondary WSPR message carrying telemetry at 
 hh:02, hh:12, hh:22, hh:32, hh:42 and hh:52. 
 v0.16a - Phase one of Telemetry. This update introduces some Telemetry Data structures and includes the encoding of the 5th and 6th 
 Maidenhead Grid Square characters into the PWR/dBm field of the primary WSPR message using a scheme developed by VE3GTC. 
 
-v0.15a - Minor code changes to improve WSPR TX timing. Modified the orion_scheduler() function to generate the PRIMARY_WSPR_TX_TIME_EV
-at (Second == 1) rather than (Second = 0) to reduce DT values. Addressed Issue #1 raised against Orion in GITHUB, by
+v0.15a - Minor code changes to improve WSPR TX timing. Modified the gemini_scheduler() function to generate the PRIMARY_WSPR_TX_TIME_EV
+at (Second == 1) rather than (Second = 0) to reduce DT values. Addressed Issue #1 raised against Gemini in GITHUB, by
 synchronizing the 1.46 second WSPR TX interrupt to the start of the WSPR transmission, by clearing TCNT1 and doing a Prescaler
 reset to zero the count. 
 
-v0.14a - Orion Self calibration with Si5351a frequency correction using  a Huff-n-Puff Algorithm. Supports both External Interrupts
+v0.14a - Gemini Self calibration with Si5351a frequency correction using  a Huff-n-Puff Algorithm. Supports both External Interrupts
 and PinChangeInterrupts for GPS PPS signal and requires unused clock output from Si5351a to be wired to ATMEGA328p PIN D5, which
 is the external clock input for Timer1. Timer1 is used as a counter to sample a 3.2 Mhz calibration signal from the Si5351a.
 The GPS PPS signal is used as a time-base to implement a simple frequency counter. A ten second sample is used to measure the
@@ -46,15 +46,15 @@ for the beacon at 14 Mhz.
 v0.13a - support K1FM v1.2 board and GPS and Si5351 power disable feature.
 
 v0.12a - Introduced board configuration. Individual .h files are stored in board_configuration folder and are coped and renamed  
-OrionBoardConfig.h to provide #defines necessary to configure PINs and functionality include HW vs SW Serial (to GPS and debug 
-monitor) as well as HW and SW I2C communication with the Si5351a. See OrionBoardConfig.h for more info. 
+GeminiBoardConfig.h to provide #defines necessary to configure PINs and functionality include HW vs SW Serial (to GPS and debug 
+monitor) as well as HW and SW I2C communication with the Si5351a. See GeminiBoardConfig.h for more info. 
 
 v0.11a - replaced TinyGps library with NeoGps to resolve compatibility issues with uBlox NEO-M8N due to TinyGpses
 lack of support for GNSSes other the GPS. 
 
 v0.10a - added "QRM avoidance" feature which applies a random frequency offset in the range of 0 to 180 Hz to the 
 base (bottom + 10 hz) transmit frequency for that transmit cycle. Also added the capability disable this feature via 
-the Orion Serial Monitor for testing purposes. Minor changes made to add some preliminary data structures to support
+the Gemini Serial Monitor for testing purposes. Minor changes made to add some preliminary data structures to support
 further telemetry data. 
 
 v0.09a - added two additonal states WAIT_TELEMETRY_ST and TELEMETRY_ST and associated events and actions 
@@ -62,13 +62,13 @@ v0.09a - added two additonal states WAIT_TELEMETRY_ST and TELEMETRY_ST and assoc
 Square from GPS Lat/Long and transmission of the first 4 characters of that calculated Grid Square in the Primary 
 WSPR message. 
 
-v0.08a - files OrionSerialMonitor.h and OrionSerialMonitor.cpp 
+v0.08a - files GeminiSerialMonitor.h and GeminiSerialMonitor.cpp 
 to implement a primative serial shell and implement software error logging and state machine tracing capabilities.
 Added software versioning. 
  
-v0.07a - Added two additional files OrionStateMachine.cpp and OrionStateMachine.h that 
-implement a finate state machine control mechanism for the Orion WSPR Beacon. Added a folder called 
-OrionFSMDocs which contains a .graphml source file (yEd Graphical Editor) and a .jpg export which documents the current
-implementation of the Orion finite state machine. These are intended to be living documents and will be updated
+v0.07a - Added two additional files GeminiStateMachine.cpp and GeminiStateMachine.h that 
+implement a finate state machine control mechanism for the Gemini WSPR Beacon. Added a folder called 
+GeminiFSMDocs which contains a .graphml source file (yEd Graphical Editor) and a .jpg export which documents the current
+implementation of the Gemini finite state machine. These are intended to be living documents and will be updated
 each time that there are changes made to the state machine. 
 

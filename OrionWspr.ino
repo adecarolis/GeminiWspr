@@ -1,4 +1,4 @@
-// OrionWspr.ino - Orion WSPR Beacon for pico-Balloon payloads using Arduino
+// GeminiWspr.ino - Gemini WSPR Beacon for pico-Balloon payloads using Arduino
 //
 // This code implements a very low power Arduino HF WSPR Beacon using a Silicon Labs Si5351a clock chip
 // as the beacon transmitter and a GPS receiver module for time and location fix.
@@ -6,10 +6,10 @@
 // This work is dedicated to the memory of my very dear friend Ken Louks, WA8REI(SK)
 // - Michael Babineau, VE3WMB - March 4, 2019.
 //
-// Why is it called Orion?
+// Why is it called Gemini?
 // Serendipity! I was trying to think of a reasonable short name for this code one evening
 // while sitting on the couch watching Netflix. I happened to look out at the night sky thorough
-// the window and there was the constellation Orion staring back at me, so Orion it is.
+// the window and there was the constellation Gemini staring back at me, so Gemini it is.
 //
 // I wish that I could say that I came up with this code all on my own, but for the most part
 // it is based on excellent work done by people far more clever than I am.
@@ -32,7 +32,7 @@
 // This firmware must be run on an Arduino or an AVR microcontroller with the Arduino Bootloader installed.
 // Pay special attention, the Timer1 Interrupt code is highly dependant on processor clock speed.
 //
-// I have tried to keep the AVR/Arduino port usage in the implementation configurable via #defines in OrionBoardConfig.h so that this
+// I have tried to keep the AVR/Arduino port usage in the implementation configurable via #defines in GeminiBoardConfig.h so that this
 // code can more easily be setup to run on different beacon boards such as those designed by DL6OW and N2NXZ and in future
 // the QRP Labs U3B. This was also the motivation for moving to a software I2C solution using SoftWire.h. The SoftWire interface
 // mimics the Wire library so switching back to using hardware-enable I2C is simple.
@@ -74,21 +74,21 @@
 #include <NMEAGPS.h>  // NeoGps
 #include <TimeLib.h>
 #include <LightChrono.h>
-#include "OrionXConfig.h"
-#include "OrionBoardConfig.h"
-#include "OrionSi5351.h"
-#include "OrionStateMachine.h"
-#include "OrionSerialMonitor.h"
-#include "OrionCalibration.h"
-#include "OrionTelemetry.h"
-#include "OrionCW.h"
+#include "GeminiXConfig.h"
+#include "GeminiBoardConfig.h"
+#include "GeminiSi5351.h"
+#include "GeminiStateMachine.h"
+#include "GeminiSerialMonitor.h"
+#include "GeminiCalibration.h"
+#include "GeminiTelemetry.h"
+#include "GeminiCW.h"
 
-// NOTE THAT ALL #DEFINES THAT ARE INTENDED TO BE USER CONFIGURABLE ARE LOCATED IN OrionXConfig.h and OrionBoardConfig.h
+// NOTE THAT ALL #DEFINES THAT ARE INTENDED TO BE USER CONFIGURABLE ARE LOCATED IN GeminiXConfig.h and GeminiBoardConfig.h
 // DON'T TOUCH ANYTHING DEFINED IN THIS FILE WITHOUT SOME VERY CAREFUL CONSIDERATION.
 
 // Port Definitions for NeoGps
 // We support hardware-based Serial, or software serial communications with the GPS using NeoSWSerial using conditional compilation
-// based on the #define GPS_USES_HW_SERIAL. For software serial comment out this #define in OrionBoardConfig.h
+// based on the #define GPS_USES_HW_SERIAL. For software serial comment out this #define in GeminiBoardConfig.h
 #if defined (GPS_USES_HW_SERIAL)
 #define gpsPort Serial
 #define GPS_PORT_NAME "Serial"
@@ -130,16 +130,16 @@ byte g_last_second = 61;
 
 unsigned long g_beacon_freq_hz = FIXED_BEACON_FREQ_HZ;      // The Beacon Frequency in Hz
 
-// Raw Telemetry data types define in OrionTelemetry.h
+// Raw Telemetry data types define in GeminiTelemetry.h
 // This contains the last validated Raw telemetry for use during GPS LOS (i.e. we use the last valid data if current data is missing)
-struct OrionTelemetryData g_last_valid_telemetry = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-struct OrionTelemetryData g_orion_current_telemetry {
+struct GeminiTelemetryData g_last_valid_telemetry = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+struct GeminiTelemetryData g_gemini_current_telemetry {
   0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
-// This differs from OrionTelemetryData mostly in that the values are reformatted with the correct units (i.e altitude in metres vs cm etc.)
+// This differs from GeminiTelemetryData mostly in that the values are reformatted with the correct units (i.e altitude in metres vs cm etc.)
 // It is used to populate the global values below prior to encoding the WSPR message for TX
-struct OrionTxData g_tx_data  = {'0', 0, 0, 0, 0, 0, 0, 0};
+struct GeminiTxData g_tx_data  = {'0', 0, 0, 0, 0, 0, 0, 0};
 
 // The following values are used in the encoding and transmission of the WSPR Type 1 messages.
 // They are populated from g_tx_data according to the implemented Telemetry encoding rules.
@@ -148,8 +148,8 @@ char g_grid_loc[5] = BEACON_GRID_SQ_4CHAR; // Grid Square defaults to hardcoded 
 uint8_t g_tx_pwr_dbm = BEACON_TX_PWR_DBM;  // This value is overwritten to encode telemetry data.
 uint8_t g_tx_buffer[SYMBOL_COUNT];
 
-// Globals used by the Orion Scheduler
-OrionAction g_current_action = NO_ACTION;
+// Globals used by the Gemini Scheduler
+GeminiAction g_current_action = NO_ACTION;
 
 // Global variables used in ISRs
 volatile bool g_proceed = false;
@@ -227,68 +227,68 @@ void get_telemetry_data() {
   // GPS Location
   if (fix.valid.location) {
     // We have a valid location so save the lat/long to current_telemetry
-    g_orion_current_telemetry.latitude = fix.latitude();
-    g_orion_current_telemetry.longitude = fix.longitude();
+    g_gemini_current_telemetry.latitude = fix.latitude();
+    g_gemini_current_telemetry.longitude = fix.longitude();
 
     // Copy the lat/long to last_valid_telemetry so we can use it if our fix is invalid (GPS LOS?) next time.
-    g_last_valid_telemetry.latitude = g_orion_current_telemetry.latitude;
-    g_last_valid_telemetry.longitude = g_orion_current_telemetry.longitude;
+    g_last_valid_telemetry.latitude = g_gemini_current_telemetry.latitude;
+    g_last_valid_telemetry.longitude = g_gemini_current_telemetry.longitude;
   }
   else {
     // Our position fix isn't valid so use the position information from the last_valid_telemetry, not ideal but better than nothing
-    g_orion_current_telemetry.latitude = g_last_valid_telemetry.latitude;
-    g_orion_current_telemetry.longitude =  g_last_valid_telemetry.longitude;
+    g_gemini_current_telemetry.latitude = g_last_valid_telemetry.latitude;
+    g_gemini_current_telemetry.longitude =  g_last_valid_telemetry.longitude;
   }
 
   // GPS Altitude
   if (fix.valid.altitude) {
-    g_orion_current_telemetry.altitude_cm = fix.altitude_cm();
-    g_last_valid_telemetry.altitude_cm = g_orion_current_telemetry.altitude_cm;
+    g_gemini_current_telemetry.altitude_cm = fix.altitude_cm();
+    g_last_valid_telemetry.altitude_cm = g_gemini_current_telemetry.altitude_cm;
   }
   else {
     // Our altitude fix isn't valid so use the last valid data
-    g_orion_current_telemetry.altitude_cm  = g_last_valid_telemetry.altitude_cm;
+    g_gemini_current_telemetry.altitude_cm  = g_last_valid_telemetry.altitude_cm;
   }
 
   // GpS Speed
   if (fix.valid.speed) {
-    g_orion_current_telemetry.speed_mkn = fix.speed_mkn();
-    g_last_valid_telemetry.speed_mkn = g_orion_current_telemetry.speed_mkn;
+    g_gemini_current_telemetry.speed_mkn = fix.speed_mkn();
+    g_last_valid_telemetry.speed_mkn = g_gemini_current_telemetry.speed_mkn;
   }
   else {
     // Our speed fix isn't valid so use the last valid data
-    g_orion_current_telemetry.speed_mkn = g_last_valid_telemetry.speed_mkn;
+    g_gemini_current_telemetry.speed_mkn = g_last_valid_telemetry.speed_mkn;
   }
 
   // GPS number of sats
   if (fix.valid.satellites) {
-    g_orion_current_telemetry.number_of_sats = fix.satellites;
-    g_last_valid_telemetry.number_of_sats = g_orion_current_telemetry.number_of_sats;
+    g_gemini_current_telemetry.number_of_sats = fix.satellites;
+    g_last_valid_telemetry.number_of_sats = g_gemini_current_telemetry.number_of_sats;
   }
   else {
-    g_orion_current_telemetry.number_of_sats = g_last_valid_telemetry.number_of_sats;
+    g_gemini_current_telemetry.number_of_sats = g_last_valid_telemetry.number_of_sats;
   }
 
   // Overall GPS status.
   if (fix.valid.status) {
-    g_orion_current_telemetry.gps_status = fix.status;
+    g_gemini_current_telemetry.gps_status = fix.status;
   }
   else {
     // Assume that if we don't have a valid Status fix that the GPS status is not OK
-    g_orion_current_telemetry.gps_status = 0;
+    g_gemini_current_telemetry.gps_status = 0;
 
   }
 
   // Get the remaining non-GPS derived telemetry values.
   // Since these are not reliant on the GPS we assume that we will always be able to get valid values for these.
 #if defined (DS1820_TEMP_SENSOR_PRESENT)
-  g_orion_current_telemetry.temperature_c = read_DS1820_temperature();
+  g_gemini_current_telemetry.temperature_c = read_DS1820_temperature();
 #elif defined (TMP36_TEMP_SENSOR_PRESENT)
-  g_orion_current_telemetry.temperature_c = read_TEMP36_temperature();
+  g_gemini_current_telemetry.temperature_c = read_TEMP36_temperature();
 #else
-  g_orion_current_telemetry.temperature_c = read_processor_temperature();
+  g_gemini_current_telemetry.temperature_c = read_processor_temperature();
 #endif
-  g_orion_current_telemetry.battery_voltage_v_x10 = read_voltage_v_x10();
+  g_gemini_current_telemetry.battery_voltage_v_x10 = read_voltage_v_x10();
 
 }
 
@@ -299,17 +299,17 @@ void set_tx_data(uint8_t msg_type) {
   // Set the transmit frequency
   g_beacon_freq_hz = get_tx_frequency();
 
-  g_tx_data.altitude_m = g_orion_current_telemetry.altitude_cm / 100; // convert from cm to metres;
-  g_tx_data.speed_kn = g_orion_current_telemetry.speed_mkn / 1000;   // covert from thousandths of a knot to knots
-  g_tx_data.number_of_sats = g_orion_current_telemetry.number_of_sats;
-  g_tx_data.gps_status = g_orion_current_telemetry.gps_status;
-  //g_tx_data.gps_3d_fix_ok_bool = (bool)g_orion_current_telemetry.gps_status_ok;
-  g_tx_data.temperature_c = g_orion_current_telemetry.temperature_c;
-  g_tx_data.processor_temperature_c = g_orion_current_telemetry.processor_temperature_c;
-  g_tx_data.battery_voltage_v_x10 = g_orion_current_telemetry.battery_voltage_v_x10;
+  g_tx_data.altitude_m = g_gemini_current_telemetry.altitude_cm / 100; // convert from cm to metres;
+  g_tx_data.speed_kn = g_gemini_current_telemetry.speed_mkn / 1000;   // covert from thousandths of a knot to knots
+  g_tx_data.number_of_sats = g_gemini_current_telemetry.number_of_sats;
+  g_tx_data.gps_status = g_gemini_current_telemetry.gps_status;
+  //g_tx_data.gps_3d_fix_ok_bool = (bool)g_gemini_current_telemetry.gps_status_ok;
+  g_tx_data.temperature_c = g_gemini_current_telemetry.temperature_c;
+  g_tx_data.processor_temperature_c = g_gemini_current_telemetry.processor_temperature_c;
+  g_tx_data.battery_voltage_v_x10 = g_gemini_current_telemetry.battery_voltage_v_x10;
 
   // Calculate the 6 character grid square and put it into g_tx_data.grid_sq_6char[]
-  calculate_gridsquare_6char(g_orion_current_telemetry.latitude, g_orion_current_telemetry.longitude);
+  calculate_gridsquare_6char(g_gemini_current_telemetry.latitude, g_gemini_current_telemetry.longitude);
 
   // Copy the first four characters of the Grid Square to g_grid_loc[] (valid for all messages)
   for (i = 0; i < 4; i++ ) g_grid_loc[i] = g_tx_data.grid_sq_6char[i];
@@ -337,7 +337,7 @@ void set_tx_data(uint8_t msg_type) {
 
   }
 
-  orion_log_telemetry (&g_tx_data);  // Pass a pointer to the g_tx_data structure
+  gemini_log_telemetry (&g_tx_data);  // Pass a pointer to the g_tx_data structure
 }
 
 void prepare_telemetry(uint8_t minute) {
@@ -471,12 +471,12 @@ uint8_t gps_fix() {
   }
 }
 
-OrionAction process_orion_sm_action (OrionAction action) {
+GeminiAction process_gemini_sm_action (GeminiAction action) {
   /****************************************************************************************************
     This is where all of the work gets triggered by processing Actions returned by the state machine.
     We don't need to worry about state we just do what we are told.
   ****************************************************************************************************/
-  OrionAction returned_action = NO_ACTION;
+  GeminiAction returned_action = NO_ACTION;
   uint8_t result;
 
   switch (action) {
@@ -489,9 +489,9 @@ OrionAction process_orion_sm_action (OrionAction action) {
     case DO_GPS_FIX :
       result = gps_fix();
       if (result == 0) {
-        returned_action = orion_state_machine(GPS_READY);
+        returned_action = gemini_state_machine(GPS_READY);
       } else {
-        returned_action = orion_state_machine(GPS_FAIL);
+        returned_action = gemini_state_machine(GPS_FAIL);
       }
       break;
 
@@ -503,14 +503,14 @@ OrionAction process_orion_sm_action (OrionAction action) {
       //TODO This should be modified with a boolean return code so we can handle calibration fail.
       do_calibration(COARSE_CORRECTION_STEP); // Initial calibration with 1 Hz correction step
 
-      returned_action = orion_state_machine(CALIBRATION_DONE);
+      returned_action = gemini_state_machine(CALIBRATION_DONE);
       break;
     
     case DO_CW_TX :
       prepare_telemetry(0);
-      orion_log_wspr_tx(g_beacon_callsign, g_grid_loc, g_beacon_freq_hz, g_tx_pwr_dbm);
+      gemini_log_wspr_tx(g_beacon_callsign, g_grid_loc, g_beacon_freq_hz, g_tx_pwr_dbm);
       encode_and_tx_cw_msg(2);
-      returned_action = orion_state_machine(TX_DONE);
+      returned_action = gemini_state_machine(TX_DONE);
       break;
 
     case DO_WSPR_TX :
@@ -530,11 +530,11 @@ OrionAction process_orion_sm_action (OrionAction action) {
 // #else
 //       g_tx_pwr_dbm = encode_temperature(g_tx_data.processor_temperature_c); // Use internal processor temperature
 // #endif
-      orion_log_wspr_tx(g_beacon_callsign, g_grid_loc, g_beacon_freq_hz, g_tx_pwr_dbm); // If TX Logging is enabled then ouput a log
+      gemini_log_wspr_tx(g_beacon_callsign, g_grid_loc, g_beacon_freq_hz, g_tx_pwr_dbm); // If TX Logging is enabled then ouput a log
       encode_and_tx_wspr_msg();
 
-      // Tell the Orion state machine that we are done tranmitting the Primary WSPR message and update the current_action
-      returned_action = orion_state_machine(TX_DONE);
+      // Tell the Gemini state machine that we are done tranmitting the Primary WSPR message and update the current_action
+      returned_action = gemini_state_machine(TX_DONE);
       break;
 
     default :
@@ -542,17 +542,17 @@ OrionAction process_orion_sm_action (OrionAction action) {
       break;
   } // end switch (action)
   return returned_action;
-} //  process_orion_sm_action
+} //  process_gemini_sm_action
 
 
-OrionAction orion_scheduler() {
+GeminiAction gemini_scheduler() {
   /*********************************************************************
-    This is the scheduler code that determines the Orion Beacon schedule
+    This is the scheduler code that determines the Gemini Beacon schedule
   **********************************************************************/
   byte Second; // The current second
   byte Minute; // The current minute
   byte i;
-  OrionAction returned_action = NO_ACTION;
+  GeminiAction returned_action = NO_ACTION;
 
   if (timeStatus() == timeSet) { // We have valid time from the GPS otherwise do nothing
 
@@ -575,13 +575,13 @@ OrionAction orion_scheduler() {
       case 0 :
       case 30 :
         if (Second == 0) {
-          return (orion_state_machine(CW_TX_TIME));
+          return (gemini_state_machine(CW_TX_TIME));
         }
         break;
 
       default :
         if (Minute % 2 == 0 && Second == 1) {
-          return (orion_state_machine(WSPR_TX_TIME));
+          return (gemini_state_machine(WSPR_TX_TIME));
         }
         break;
 
@@ -590,7 +590,7 @@ OrionAction orion_scheduler() {
   } // end if timestatus == timeset
 
   return returned_action;
-} // end orion_scheduler()
+} // end gemini_scheduler()
 
 void wspr_tx_interrupt_setup() {
 
@@ -666,8 +666,8 @@ void setup() {
   delay( 250 );
 #endif
 
-  // Set the intial state for the Orion Beacon State Machine
-  orion_sm_begin();
+  // Set the intial state for the Gemini Beacon State Machine
+  gemini_sm_begin();
 
   // Read unused analog pin (not connected) to generate a random seed for QRM avoidance feature
   randomSeed(analogRead(ANALOG_PIN_FOR_RNG_SEED));
@@ -681,7 +681,7 @@ void setup() {
   sprintf(str, "%s/B", BEACON_CALLSIGN_6CHAR);
   send_cw(str, 2);
 
-  g_current_action = orion_state_machine(SETUP_DONE);
+  g_current_action = gemini_state_machine(SETUP_DONE);
 
 } // end setup()
 
@@ -695,13 +695,13 @@ void loop() {
     set_tx_data(0);
   }
   
-  // This triggers actual work when the state machine returns an OrionAction
+  // This triggers actual work when the state machine returns an GeminiAction
   while (g_current_action != NO_ACTION) {
-    g_current_action = process_orion_sm_action(g_current_action);
+    g_current_action = process_gemini_sm_action(g_current_action);
   }
   
   if (g_chrono.hasPassed(CALIBRATION_INTERVAL, true)) { // When the time set interval has passed, restart the Chronometer set system time again from GPS
-    g_current_action = orion_state_machine(TIMER_EXPIRED);
+    g_current_action = gemini_state_machine(TIMER_EXPIRED);
 #if defined (SYNC_LED_PRESENT)
 if (timeStatus() == timeSet)
   digitalWrite(SYNC_LED_PIN, HIGH); // Turn LED on if the time is synced
@@ -710,6 +710,6 @@ else
 #endif
   } else {
     // Call the scheduler to determine if it is time for any action
-    g_current_action = orion_scheduler();
+    g_current_action = gemini_scheduler();
   }
 } // end loop ()

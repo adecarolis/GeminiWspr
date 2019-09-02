@@ -1,7 +1,7 @@
-#ifndef ORIONTELEMETRY_H
-#define ORIONTELEMETRY_H
+#ifndef GEMINITELEMETRY_H
+#define GEMINITELEMETRY_H
 /*
-   OrionTelemetry.h - Orion WSPR Beacon for pico-Balloon payloads for Arduino
+   GeminiTelemetry.h - Gemini WSPR Beacon for pico-Balloon payloads for Arduino
 
    Copyright (C) 2018-2019 Michael Babineau <mbabineau.ve3wmb@gmail.com>
 

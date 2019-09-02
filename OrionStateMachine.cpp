@@ -1,5 +1,5 @@
 /*
-   OrionStateMachine.cpp - Control Logic for the Orion WSPR Beacon
+   GeminiStateMachine.cpp - Control Logic for the Gemini WSPR Beacon
    This file implements a state machine.
 
    Copyright (C) 2018-2019 Michael Babineau <mbabineau.ve3wmb@gmail.com>
@@ -17,52 +17,52 @@
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "OrionSerialMonitor.h"
-#include "OrionStateMachine.h"
-#include "OrionBoardConfig.h"
+#include "GeminiSerialMonitor.h"
+#include "GeminiStateMachine.h"
+#include "GeminiBoardConfig.h"
 
 
-OrionState g_current_orion_state = POWER_UP;
-OrionState g_previous_orion_state = POWER_UP;
-OrionEvent g_current_orion_event = NO_EVENT;
-OrionEvent g_previous_orion_event = NO_EVENT;
+GeminiState g_current_gemini_state = POWER_UP;
+GeminiState g_previous_gemini_state = POWER_UP;
+GeminiEvent g_current_gemini_event = NO_EVENT;
+GeminiEvent g_previous_gemini_event = NO_EVENT;
 
 
-void orion_sm_no_op () {
+void gemini_sm_no_op () {
   // Placeholder
 }
 
 // State Machine Initializationto be called once in setup()
-void orion_sm_begin() {
+void gemini_sm_begin() {
   // Start out in the initial state
-  g_current_orion_state = POWER_UP;
-  g_previous_orion_state = POWER_UP;
+  g_current_gemini_state = POWER_UP;
+  g_previous_gemini_state = POWER_UP;
 }
 
-OrionState orion_sm_get_current_state(){
-  return g_current_orion_state;
+GeminiState gemini_sm_get_current_state(){
+  return g_current_gemini_state;
 }
-void orion_sm_change_state(OrionState new_state) {
-  g_previous_orion_state = g_current_orion_state;
-  g_current_orion_state = new_state;
+void gemini_sm_change_state(GeminiState new_state) {
+  g_previous_gemini_state = g_current_gemini_state;
+  g_current_gemini_state = new_state;
 }
 
 
-// This is the event processor that implements the core of the Orion State Machine
-// It returns an Action of type OrionAction to trigger work.
-OrionAction orion_state_machine(OrionEvent event) {
+// This is the event processor that implements the core of the Gemini State Machine
+// It returns an Action of type GeminiAction to trigger work.
+GeminiAction gemini_state_machine(GeminiEvent event) {
 
-  OrionAction next_action = NO_ACTION; // Always default to NO_ACTION
-  g_current_orion_event = event;
+  GeminiAction next_action = NO_ACTION; // Always default to NO_ACTION
+  g_current_gemini_event = event;
 
   // Pre_sm trace logging
-  orion_sm_trace_pre(g_current_orion_state, event);
+  gemini_sm_trace_pre(g_current_gemini_state, event);
 
-  switch (g_current_orion_state) {
+  switch (g_current_gemini_state) {
 
     case  POWER_UP :
       if (event == SETUP_DONE) {
-        orion_sm_change_state(WAIT_GPS_READY);
+        gemini_sm_change_state(WAIT_GPS_READY);
         next_action = DO_GPS_FIX;
       }
       else
@@ -73,21 +73,21 @@ OrionAction orion_state_machine(OrionEvent event) {
       if (event == GPS_READY) {
         if ((SI5351_SELF_CALIBRATION_SUPPORTED == true) && (is_selfcalibration_on())) {
           // Done setup now do intial calibration
-          orion_sm_change_state(CALIBRATE);
+          gemini_sm_change_state(CALIBRATE);
           next_action = DO_CALIBRATION;
         }
         else {
           // If calibration is not suppoerted wait for next TX cycle
-          orion_sm_change_state(WAIT_TX);
+          gemini_sm_change_state(WAIT_TX);
         }
       }
       else if (event == TIMER_EXPIRED) {
-        orion_sm_change_state(WAIT_GPS_READY);
+        gemini_sm_change_state(WAIT_GPS_READY);
         next_action = DO_GPS_FIX;
       }
       else if (event == GPS_FAIL) {
           // trying again getting a fix
-          orion_sm_change_state(WAIT_GPS_READY);
+          gemini_sm_change_state(WAIT_GPS_READY);
           next_action = DO_GPS_FIX;
       }
       else
@@ -97,7 +97,7 @@ OrionAction orion_state_machine(OrionEvent event) {
     case  CALIBRATE :  // calibrating Si5351a clock
       if (event == CALIBRATION_DONE) {
         // Done setup now do intial calibration
-        orion_sm_change_state(WAIT_TX);
+        gemini_sm_change_state(WAIT_TX);
       }
       else
           swerr(2, event); // This event is not supported in this state
@@ -106,15 +106,15 @@ OrionAction orion_state_machine(OrionEvent event) {
     case WAIT_TX :  // Waiting for the next WSPR transmission slot
       if (event == WSPR_TX_TIME) {
         // Time to transmit
-        orion_sm_change_state(TX);
+        gemini_sm_change_state(TX);
         next_action = DO_WSPR_TX;
       }
       else if (event == CW_TX_TIME) {
-        orion_sm_change_state(TX);
+        gemini_sm_change_state(TX);
         next_action = DO_CW_TX;
       } 
       else if (event == TIMER_EXPIRED) {
-        orion_sm_change_state(WAIT_GPS_READY);
+        gemini_sm_change_state(WAIT_GPS_READY);
         next_action = DO_GPS_FIX;
       }
       else
@@ -124,9 +124,9 @@ OrionAction orion_state_machine(OrionEvent event) {
     case TX :  // Transmission
 
       if (event == TX_DONE) {
-        orion_sm_change_state(WAIT_TX);
+        gemini_sm_change_state(WAIT_TX);
       } else if (event == TIMER_EXPIRED) {
-        orion_sm_change_state(WAIT_GPS_READY);
+        gemini_sm_change_state(WAIT_GPS_READY);
         next_action = DO_GPS_FIX;
       }
       else
@@ -134,17 +134,17 @@ OrionAction orion_state_machine(OrionEvent event) {
       break;
 
     default : 
-        swerr(5, g_current_orion_state); // If we end up here it is an error as we have and unimplemented state.
+        swerr(5, g_current_gemini_state); // If we end up here it is an error as we have and unimplemented state.
         break;
     
 
   } // end switch
 
-  g_previous_orion_event = event;
-  g_current_orion_event = NO_EVENT;
+  g_previous_gemini_event = event;
+  g_current_gemini_event = NO_EVENT;
 
   // Post_sm trace logging
-  orion_sm_trace_post(byte(g_current_orion_state), event, next_action);
+  gemini_sm_trace_post(byte(g_current_gemini_state), event, next_action);
 
   return next_action;
 

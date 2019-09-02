@@ -1,7 +1,7 @@
-#ifndef ORIONCALIBRATION_H
-#define ORIONCALIBRATION_H
+#ifndef GEMINICALIBRATION_H
+#define GEMINICALIBRATION_H
 /*
-    OrionCalibbration.h - Definitions for Orion SI5351 Self Calibration
+    GeminiCalibbration.h - Definitions for Gemini SI5351 Self Calibration
 
    Copyright (C) 2018-2019 Michael Babineau <mbabineau.ve3wmb@gmail.com>
 
@@ -18,7 +18,7 @@
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "OrionXConfig.h"
+#include "GeminiXConfig.h"
 
 #define FINE_CORRECTION_STEP   10     // 0.1 HZ step
 #define COARSE_CORRECTION_STEP 100    // 10 Hz step

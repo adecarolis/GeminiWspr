@@ -1,11 +1,11 @@
-#include "OrionCW.h"
-#include "OrionSi5351.h"
-#include "OrionBoardConfig.h"
-#include "OrionXConfig.h"
+#include "GeminiCW.h"
+#include "GeminiSi5351.h"
+#include "GeminiBoardConfig.h"
+#include "GeminiXConfig.h"
 #include <int.h>
 
 /*
-    OrionCW.cpp - Tiny CW add-on for Orion WSPR
+    GeminiCW.cpp - Tiny CW add-on for Gemini WSPR
 
     Based on si5351_beacon - https://github.com/la3pna/si5351_beacon
     by LA3PNA

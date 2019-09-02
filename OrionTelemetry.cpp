@@ -1,5 +1,5 @@
 /*
-   OrionTelemetry.cpp - Telemetry Data gathering, formatting and encoding
+   GeminiTelemetry.cpp - Telemetry Data gathering, formatting and encoding
 
    Copyright (C) 2018-2019 Michael Babineau <mbabineau.ve3wmb@gmail.com>
 
@@ -17,8 +17,8 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include <int.h>
-#include "OrionXConfig.h"
-#include "OrionBoardConfig.h"
+#include "GeminiXConfig.h"
+#include "GeminiBoardConfig.h"
 
 #if defined (DS1820_TEMP_SENSOR_PRESENT)
   #include <OneWire.h>

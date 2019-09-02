@@ -1,9 +1,9 @@
-#ifndef ORIONCW_H
-#define ORIONCW_H
+#ifndef GEMINICW_H
+#define GEMINICW_H
 #include <Arduino.h>
 
 /*
-    OrionCW.h - Tiny CW add-on for Orion WSPR
+    GeminiCW.h - Tiny CW add-on for Gemini WSPR
 
     Based on si5351_beacon - https://github.com/la3pna/si5351_beacon
     by LA3PNA

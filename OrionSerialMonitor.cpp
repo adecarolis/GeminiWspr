@@ -1,5 +1,5 @@
 /*
- * OrionSerialMonitor.cpp - Simple Software Serial system monitor for Orion WSPR Beacon
+ * GeminiSerialMonitor.cpp - Simple Software Serial system monitor for Gemini WSPR Beacon
  *
  * Copyright 2019 Michael Babineau, VE3WMB <mbabineau.ve3wmb@gmail.com>
  *                          
@@ -15,9 +15,9 @@
  * If not, see <http://www.gnu.org/licenses/>.
 */
 #include <Arduino.h>
-#include "OrionSerialMonitor.h"
-#include "OrionXConfig.h"
-#include "OrionBoardConfig.h"
+#include "GeminiSerialMonitor.h"
+#include "GeminiXConfig.h"
+#include "GeminiBoardConfig.h"
 #include <TimeLib.h>
 #define OFF false
 #define ON true
@@ -159,24 +159,24 @@ char *ActionNames[] =
 
 
 
-void orion_sm_trace_pre(byte state, byte event){
+void gemini_sm_trace_pre(byte state, byte event){
   
   if (g_debug_on_off == OFF) return;
   
   print_date_time();
-  debugSerial.print(F(">> orion PRE sm trace: "));
+  debugSerial.print(F(">> gemini PRE sm trace: "));
   debugSerial.print(F("curr_state: "));
   debugSerial.print(StateNames[state]);
   debugSerial.print(F(" curr_event: "));
   debugSerial.println(EventNames[event]);
 }
 
-void orion_sm_trace_post(byte state, byte processed_event,  byte resulting_action){
+void gemini_sm_trace_post(byte state, byte processed_event,  byte resulting_action){
   
   if (g_debug_on_off == OFF) return;
   
   print_date_time();
-  debugSerial.print(F("<< orion POST sm trace: "));
+  debugSerial.print(F("<< gemini POST sm trace: "));
   debugSerial.print(F("curr_state: "));
   debugSerial.print(StateNames[state]);
   debugSerial.print(F(" event_just_processed: "));
@@ -185,7 +185,7 @@ void orion_sm_trace_post(byte state, byte processed_event,  byte resulting_actio
   debugSerial.println(ActionNames[resulting_action]);
 }
 
-void orion_log_wspr_tx(char call[], char grid[], unsigned long freq_hz, uint8_t pwr_dbm){
+void gemini_log_wspr_tx(char call[], char grid[], unsigned long freq_hz, uint8_t pwr_dbm){
 
   // If either txlog is turned on or info logs are turned on then log the TX
   if ((g_txlog_on_off == OFF) && (g_info_log_on_off == OFF)) return; 
@@ -201,7 +201,7 @@ void orion_log_wspr_tx(char call[], char grid[], unsigned long freq_hz, uint8_t 
   debugSerial.println(pwr_dbm);  
 }
 
-void orion_log_telemetry (struct OrionTxData *data) {
+void gemini_log_telemetry (struct GeminiTxData *data) {
   
   // If either txlog is turned on or info logs are turned on then log the TX
   if ((g_txlog_on_off == OFF) && (g_info_log_on_off == OFF)) return; 
@@ -227,7 +227,7 @@ void orion_log_telemetry (struct OrionTxData *data) {
   debugSerial.println( (*data).temperature_c);
 }
 
-void orion_log(char msg[])
+void gemini_log(char msg[])
 {
   if (g_info_log_on_off == OFF) return;
   print_date_time();

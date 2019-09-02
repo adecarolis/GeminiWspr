@@ -1,7 +1,7 @@
-#ifndef ORIONSERIALMONITOR_H
-#define ORIONSERIALMONITOR_H
+#ifndef GEMINISERIALMONITOR_H
+#define GEMINISERIALMONITOR_H
 /*
-    OrionSerialMonitor.h - Definitions for Orion Debug Monitor
+    GeminiSerialMonitor.h - Definitions for Gemini Debug Monitor
 
    Copyright (C) 2018-2019 Michael Babineau <mbabineau.ve3wmb@gmail.com>
 
@@ -19,19 +19,19 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include <Arduino.h>
-#include "OrionXConfig.h"
+#include "GeminiXConfig.h"
 
 // For use in info logging
-enum OrionWsprMsgType {PRIMARY_WSPR_MSG, ALTITUDE_TELEM_MSG, TEMPERATURE_TELEM_MSG, VOLTAGE_TELEM_MSG};
+enum GeminiWsprMsgType {PRIMARY_WSPR_MSG, ALTITUDE_TELEM_MSG, TEMPERATURE_TELEM_MSG, VOLTAGE_TELEM_MSG};
 
 void swerr(byte swerr_num, int data);
 void serial_monitor_begin();
 void serial_monitor_interface();
-void orion_log(char msg[]);
-void orion_log_telemetry(struct OrionTxData *data);
-void orion_log_wspr_tx(char call[], char grid[], unsigned long freq_hz, uint8_t pwr_dbm);
-void orion_sm_trace_pre(byte state, byte event);
-void orion_sm_trace_post(byte state, byte processed_event,  byte resulting_action);
+void gemini_log(char msg[]);
+void gemini_log_telemetry(struct GeminiTxData *data);
+void gemini_log_wspr_tx(char call[], char grid[], unsigned long freq_hz, uint8_t pwr_dbm);
+void gemini_sm_trace_pre(byte state, byte event);
+void gemini_sm_trace_post(byte state, byte processed_event,  byte resulting_action);
 bool is_qrm_avoidance_on();
 bool is_selfcalibration_on();  
 #endif

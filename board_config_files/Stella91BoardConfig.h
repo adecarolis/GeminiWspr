@@ -1,7 +1,7 @@
-#ifndef ORIONBOARDCONFIG_H
-#define ORIONBOARDCONFIG_H
+#ifndef GEMINIBOARDCONFIG_H
+#define GEMINIBOARDCONFIG_H
 
- //  Stella91BoardConfig.h - Orion Board Configuration for DL6OW STELLA 9.1 - U3S Clone
+ //  Stella91BoardConfig.h - Gemini Board Configuration for DL6OW STELLA 9.1 - U3S Clone
  //  HW serial to GPS, SW serial for debug monitor, software I2C, supports self-calibration
  //  with PinChangeInterrupts on A5/ADC5.
 
@@ -23,7 +23,7 @@
 */
 #include <Arduino.h>
 
-// THIS FILE CONTAINS THE USER MODIFIABLE #DEFINES TO CONFIGURE A SPECIFIC BOARD TO USE THE ORION WSPR BEACON CODE
+// THIS FILE CONTAINS THE USER MODIFIABLE #DEFINES TO CONFIGURE A SPECIFIC BOARD TO USE THE GEMINI WSPR BEACON CODE
 
 #define BOARDNAME " - STELLA 9.1"        // This string is output along with code version using the 'v' command in the monitor
 
@@ -84,7 +84,7 @@
 // The assumption is that if SW serial is used for communicating with the GPS, that hardware
 // serial is used for the debug monitor, or vise versa. One of the two must use hardware serial.
 // Note that the choice of PINS will impact the setup of the PinChange Interrupts for NeoSWSerial
-// See OrionSerialMonitor.cpp
+// See GeminiSerialMonitor.cpp
 #define SOFT_SERIAL_RX_PIN        12            // MISO of six pin ICSP header on DL6OW boards
 #define SOFT_SERIAL_TX_PIN        11            // MOSI of six pin ICSP header on DL6OW board
 
@@ -118,8 +118,8 @@
 
 /*********************************************************************************************************************** 
 *  You need to calibrate your Si5351a and substitute the your correction value for SI5351A_CLK_FREQ_CORRECTION below.
-*  See OrionSi5351_calibration.ino sketch. You may also need to modify SI5351BX_XTALPF
-*  in OrionSi5351.h is you need a crystal load capacitance other that 8 pf.
+*  See GeminiSi5351_calibration.ino sketch. You may also need to modify SI5351BX_XTALPF
+*  in GeminiSi5351.h is you need a crystal load capacitance other that 8 pf.
 ************************************************************************************************************************/
 #define SI5351A_CLK_FREQ_CORRECTION   -8213  // Correction value for Si5351a on DL6OW Stella 9.1 prototype
 
@@ -131,7 +131,7 @@
                                                
 #define GPS_SERIAL_BAUD         9600          // Baudrate for the GPS Serial port
 
-#define MONITOR_SERIAL_BAUD     9600          // Baudrate for Orion Serial Monitor      
+#define MONITOR_SERIAL_BAUD     9600          // Baudrate for Gemini Serial Monitor      
 
 
 /***************************************************************************

@@ -1,5 +1,5 @@
 /*
-   OrionCalibration.cpp - A simple self-calibration capability for the Si5351
+   GeminiCalibration.cpp - A simple self-calibration capability for the Si5351
    using the PPS signal from the GPS and a free Si5351 CLK output fed back to the
    Atmega328p processor via D5, which is the external clock input for Timer1.
  * *** Note D5 must be used for this to work ****
@@ -30,11 +30,11 @@
    You should have received a copy of the GNU General Public License.
    If not, see <http://www.gnu.org/licenses/>.
 */
-#include "OrionXConfig.h"
-#include "OrionBoardConfig.h"
-#include "OrionSi5351.h"
-#include "OrionCalibration.h"
-#include "OrionSerialMonitor.h"
+#include "GeminiXConfig.h"
+#include "GeminiBoardConfig.h"
+#include "GeminiSi5351.h"
+#include "GeminiCalibration.h"
+#include "GeminiSerialMonitor.h"
 
 
 
@@ -233,7 +233,7 @@ void do_calibration(unsigned long calibration_step) {
   byte i;
   int timer_counter1 = 0;
 
-orion_log("*** Starting Calibration ***");
+gemini_log("*** Starting Calibration ***");
 
   // We do 24 frequency samples at 10 seconds each ( ~ 4 minutes) so the maximum correction is 24 X calibration_step
   for (i = 0; i < 10; i++) {

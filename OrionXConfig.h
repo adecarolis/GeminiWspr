@@ -1,7 +1,7 @@
-#ifndef ORIONXCONFIG_H
-#define ORIONXCONFIG_H
+#ifndef GEMINIXCONFIG_H
+#define GEMINIXCONFIG_H
 /*
-   OrionXConfig.h - Orion WSPR Beacon for pico-Balloon payloads for Arduino
+   GeminiXConfig.h - Gemini WSPR Beacon for pico-Balloon payloads for Arduino
 
    Copyright (C) 2018-2019 Michael Babineau <mbabineau.ve3wmb@gmail.com>
 
@@ -20,9 +20,9 @@
 */
 #include <Arduino.h>
 
-// THIS FILE CONTAINS THE USER MODIFIABLE #DEFINES TO CONFIGURE THE ORION WSPR BEACON
+// THIS FILE CONTAINS THE USER MODIFIABLE #DEFINES TO CONFIGURE THE GEMINI WSPR BEACON
 
-#define ORION_FW_VERSION "v0.17x"  // Whole numbers are for released versions. (i.e. 1.0, 2.0 etc.)
+#define GEMINI_FW_VERSION "v0.17x"  // Whole numbers are for released versions. (i.e. 1.0, 2.0 etc.)
                                   // Numbers to the right of the decimal are allocated consecutively, one per GITHUB submission.(i.e. 0.01, 0.02 etc)
                                   // a = alpha b=beta, r=release
                                   
@@ -50,7 +50,7 @@
 
 // Type Definitions
 
-struct OrionTelemetryData {
+struct GeminiTelemetryData {
   float latitude;
   float longitude;
   int32_t altitude_cm;
@@ -62,7 +62,7 @@ struct OrionTelemetryData {
   uint8_t gps_status; 
 };
 
-struct OrionTxData {
+struct GeminiTxData {
   char grid_sq_6char[7]; // 6 Character Grid Square calculated from GPS Lat/Long values.
   int32_t altitude_m; 
   uint32_t speed_kn; 

@@ -1,7 +1,7 @@
-#ifndef ORIONSTATEMACHINE_H
-#define ORIONSTATEMACHINE_H
+#ifndef GEMINISTATEMACHINE_H
+#define GEMINISTATEMACHINE_H
 /*
-    OrionStateMachine.h - Definitions for control of Orion WSPR Beacon
+    GeminiStateMachine.h - Definitions for control of Gemini WSPR Beacon
 
    Copyright (C) 2018-2019 Michael Babineau <mbabineau.ve3wmb@gmail.com>
 
@@ -18,13 +18,13 @@
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-enum OrionState {POWER_UP, WAIT_GPS_READY, CALIBRATE, WAIT_TX, TX};
+enum GeminiState {POWER_UP, WAIT_GPS_READY, CALIBRATE, WAIT_TX, TX};
                  
-enum OrionEvent {NO_EVENT, GPS_READY, GPS_FAIL, SETUP_DONE, CALIBRATION_DONE, WSPR_TX_TIME, CW_TX_TIME, TX_DONE, TIMER_EXPIRED};
+enum GeminiEvent {NO_EVENT, GPS_READY, GPS_FAIL, SETUP_DONE, CALIBRATION_DONE, WSPR_TX_TIME, CW_TX_TIME, TX_DONE, TIMER_EXPIRED};
 
-enum OrionAction {NO_ACTION, DO_GPS_FIX, DO_CALIBRATION, DO_WSPR_TX, DO_CW_TX}; 
-void orion_sm_begin();
+enum GeminiAction {NO_ACTION, DO_GPS_FIX, DO_CALIBRATION, DO_WSPR_TX, DO_CW_TX}; 
+void gemini_sm_begin();
 
-OrionState orion_sm_get_current_state();
-OrionAction orion_state_machine(OrionEvent event);                                 
+GeminiState gemini_sm_get_current_state();
+GeminiAction gemini_state_machine(GeminiEvent event);                                 
 #endif
