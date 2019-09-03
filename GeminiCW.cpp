@@ -86,7 +86,7 @@ send_char(char c)
 {
   int i ;
   if (c == ' ') {
-    Serial.print(' ') ;
+    // Serial.print(' ') ;
     delay(7 * DOTLEN) ;
     return ;
   } else {
@@ -107,7 +107,7 @@ send_char(char c)
       i = 39;
     else if (i == 45) // '-'
       i = 40;
-    Serial.print(c) ;
+    // Serial.print(c) ;
     unsigned char p = morsetab[i] ;
     while (p != 1) {
       if (p & 1)
