@@ -320,9 +320,9 @@ void prepare_telemetry(uint8_t minute) {
   get_telemetry_data();
 
   if (minute % 8 == 0) {
-    set_tx_data(1);
-  } else {
     set_tx_data(0);
+  } else {
+    set_tx_data(1);
   }
 
 } //end prepare_telemetry
