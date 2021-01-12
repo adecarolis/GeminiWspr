@@ -39,7 +39,7 @@
 #define CW_BEACON_FREQ_HZ         14099000UL    //  CW Beacon Frequency
 
 // Configuration parameters for Primary WSPR Message (i.e. Callsign, 4 character grid square and power out in dBm)
-#define BEACON_CALLSIGN_6CHAR   "K1FM"      // Your beacon Callsign, maximum of 6 characters
+#define BEACON_CALLSIGN_6CHAR   "MYCALL"        // Your beacon Callsign, maximum of 6 characters
 #define BEACON_GRID_SQ_4CHAR    "FN30"        // Your hardcoded 4 character Grid Square - this will be overwritten with GPS derived Grid
 #define BEACON_TX_PWR_DBM          7          // Beacon Power Output in dBm (5mW = 7dBm)
 #define BEACON_CHANNEL_ID_1     'Q'
